@@ -7,6 +7,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import MyReminders from './screens/MyReminders';
 import PastReminders from './screens/PastReminders';
+import CreateNewReminder from './screens/CreateNewReminder';
 
 import storage from './storage/storage';
 
@@ -81,12 +82,12 @@ const App = () => {
               component={HomeScreen}
               options={{ headerShown: false }}
             />
-            {/* <Stack.Screen
+            <Stack.Screen
               name='CreateNewReminder'
               component={CreateNewReminder}
               options={{ title: 'Create New Reminder' }}
             />
-            <Stack.Screen
+            {/* <Stack.Screen
               name='ViewReminder'
               component={ViewReminder}
               options={{ title: 'View Reminder' }}
