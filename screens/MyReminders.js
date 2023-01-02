@@ -10,10 +10,6 @@ const MyReminders = ({ navigation }) => {
 
     const [data, setData] = useState([]);
 
-    // const createNewReminder = () => {
-    //     navigation.navigate('CreateNewReminder');
-    // }
-
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     const formatDate = (dateString) => {
@@ -35,54 +31,54 @@ const MyReminders = ({ navigation }) => {
         return formattedTime;
     }
 
-    // useFocusEffect(() => {
-    //     storage.load({
-    //         key: 'reminders',
-    //     })
-    //         .then(ret => {
-    //             setData(ret);
-    //         })
-    //         .catch(err => {
-    //             console.warn(err.message);
-    //         });
-    // });
+    useFocusEffect(() => {
+        storage.load({
+            key: 'reminders',
+        })
+            .then(ret => {
+                setData(ret);
+            })
+            .catch(err => {
+                console.warn(err.message);
+            });
+    });
 
-    // const reminders = data.map((item, index) => {
-    //     return (
-    //         <TouchableOpacity
-    //             key={index}
-    //             style={styles.reminder}
-    //             onPress={() => navigation.navigate('ViewReminder', {
-    //                 key: index,
-    //                 title: item['title'],
-    //                 date: item['date'],
-    //                 notifID: item['notifID'],
-    //                 shouldSpeak: item['shouldSpeak'],
-    //                 message: item['message']
-    //             })}
-    //         >
-    //             <>
-    //                 <Text style={styles.reminderText}>{item['title']}</Text>
-    //                 <Text style={styles.reminderDate}>{formatTime(item['date'])}, {formatDate(item['date'])}</Text>
-    //             </>
-    //         </TouchableOpacity>
-    //     )
-    // });
+    const reminders = data.map((item, index) => {
+        return (
+            <TouchableOpacity
+                key={index}
+                style={styles.reminder}
+                onPress={() => navigation.navigate('ViewReminder', {
+                    key: index,
+                    title: item['title'],
+                    date: item['date'],
+                    notifID: item['notifID'],
+                    shouldSpeak: item['shouldSpeak'],
+                    message: item['message']
+                })}
+            >
+                <>
+                    <Text style={styles.reminderText}>{item['title']}</Text>
+                    <Text style={styles.reminderDate}>{formatTime(item['date'])}, {formatDate(item['date'])}</Text>
+                </>
+            </TouchableOpacity>
+        )
+    });
 
     const noReminders = <Text style={styles.noReminders}>No reminders yet. Create a new one!</Text>
 
     return (
         <SafeAreaView>
-            {/* {reminders.length === 0 ? noReminders :
+            {reminders.length === 0 ? noReminders :
                 <ScrollView style={styles.reminderView} scrollEnabled={data.length * 50 > Dimensions.get('window').height - 400}>
                     {reminders}
                 </ScrollView>}
             <TouchableOpacity
                 style={styles.topButton}
-                onPress={createNewReminder}
+                onPress={() => {navigation.navigate('CreateNewReminder')}}
             >
                 <Text style={{ fontSize: 36, textAlign: 'center' }}>+</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
         </SafeAreaView>
     );
 

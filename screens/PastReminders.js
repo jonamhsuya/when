@@ -31,48 +31,48 @@ const PastReminders = ({ navigation }) => {
         return formattedTime;
     }
 
-    // useFocusEffect(() => {
-    //     storage.load({
-    //         key: 'pastReminders',
-    //     })
-    //         .then(ret => {
-    //             setData(ret);
-    //         })
-    //         .catch(err => {
-    //             console.warn(err.message);
-    //         });
-    // });
+    useFocusEffect(() => {
+        storage.load({
+            key: 'pastReminders',
+        })
+            .then(ret => {
+                setData(ret);
+            })
+            .catch(err => {
+                console.warn(err.message);
+            });
+    });
 
-    // const pastReminders = data.map((item, index) => {
-    //     return (
-    //         <TouchableOpacity
-    //             key={index}
-    //             style={styles.reminder}
-    //             onPress={() => navigation.navigate('ViewPastReminder', {
-    //                 key: index,
-    //                 title: item['title'],
-    //                 date: item['date'],
-    //                 notifID: item['notifID'],
-    //                 shouldSpeak: item['shouldSpeak'],
-    //                 message: item['message']
-    //             })}
-    //         >
-    //             <>
-    //                 <Text style={styles.reminderText}>{item['title']}</Text>
-    //                 <Text style={styles.reminderDate}>{formatTime(item['date'])}, {formatDate(item['date'])}</Text>
-    //             </>
-    //         </TouchableOpacity>
-    //     )
-    // });
+    const pastReminders = data.map((item, index) => {
+        return (
+            <TouchableOpacity
+                key={index}
+                style={styles.reminder}
+                onPress={() => navigation.navigate('ViewPastReminder', {
+                    key: index,
+                    title: item['title'],
+                    date: item['date'],
+                    notifID: item['notifID'],
+                    shouldSpeak: item['shouldSpeak'],
+                    message: item['message']
+                })}
+            >
+                <>
+                    <Text style={styles.reminderText}>{item['title']}</Text>
+                    <Text style={styles.reminderDate}>{formatTime(item['date'])}, {formatDate(item['date'])}</Text>
+                </>
+            </TouchableOpacity>
+        )
+    });
 
     const noPastReminders = <Text style={styles.noReminders}>No past reminders yet.</Text>
 
     return (
         <SafeAreaView>
-            {/* {pastReminders.length === 0 ? noPastReminders : 
+            {pastReminders.length === 0 ? noPastReminders : 
             <ScrollView style={styles.reminderView}>
                 {pastReminders}
-            </ScrollView>} */}
+            </ScrollView>}
         </SafeAreaView>
     );
 
