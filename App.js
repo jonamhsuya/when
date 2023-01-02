@@ -5,11 +5,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Notifications from 'expo-notifications';
+import * as Speech from 'expo-speech';
 
 import MyReminders from './screens/MyReminders';
 import PastReminders from './screens/PastReminders';
 import CreateNewReminder from './screens/CreateNewReminder';
 import ViewReminder from './screens/ViewReminder';
+import ViewPastReminder from './screens/ViewPastReminder';
 
 import storage from './storage/storage';
 
@@ -54,6 +56,47 @@ const App = () => {
         shouldPlaySound: true,
         shouldSetBadge: true,
       }),
+      handleSuccess: async (notifID) => {
+        let temp;
+        storage.load({
+          key: 'reminders',
+        })
+          .then(ret => {
+            for (let i = 0; i < ret.length; i++) {
+              if (notifID.includes(ret[i]['notifID'])) {
+                if (ret[i]['shouldSpeak']) {
+                  setTimeout(() => Speech.speak(ret[i]['message']), 1000);
+                }
+                setTimeout(() => {
+                  temp = ret[i];
+                  ret.splice(i, 1);
+                  storage.save({
+                    key: 'reminders',
+                    data: ret,
+                    expires: null,
+                  });
+                  storage.load({
+                    key: 'pastReminders',
+                  })
+                    .then(ret => {
+                      ret.push(temp);
+                      storage.save({
+                        key: 'pastReminders',
+                        data: ret,
+                        expires: null,
+                      });
+                    })
+                    .catch(err => {
+                      console.log(err);
+                    })
+                }, 1001);
+              }
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
+      }
     });
   });
 
@@ -105,11 +148,11 @@ const App = () => {
               component={ViewReminder}
               options={{ title: 'View Reminder' }}
             />
-            {/* <Stack.Screen
+            <Stack.Screen
               name='ViewPastReminder'
               component={ViewPastReminder}
               options={{ title: 'View Past Reminder' }}
-            /> */}
+            />
           </Stack.Navigator>
         </SafeAreaProvider>
       </NavigationContainer>
