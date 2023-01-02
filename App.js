@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import * as Notifications from 'expo-notifications';
 
 import MyReminders from './screens/MyReminders';
 import PastReminders from './screens/PastReminders';
@@ -26,6 +27,8 @@ const App = () => {
       })
       .catch(err => {
         // user is accessing app for the first time
+        askPermissions();
+
         // save empty array in storage to store future reminders and past reminders
         storage.save({
           key: 'reminders',
@@ -44,6 +47,14 @@ const App = () => {
           expires: null,
         });
       });
+
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
+    });
   });
 
   const HomeScreen = () => {
@@ -70,6 +81,7 @@ const App = () => {
       </Tab.Navigator>
     );
   }
+
 
   return (
     <>
@@ -107,3 +119,17 @@ const App = () => {
 };
 
 export default App;
+
+
+const askPermissions = async () => {
+  const { status: existingStatus } = await Notifications.requestPermissionsAsync();
+  let finalStatus = existingStatus;
+  if (existingStatus !== 'granted') {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
+  }
+  if (finalStatus !== 'granted') {
+    return false;
+  }
+  return true;
+};

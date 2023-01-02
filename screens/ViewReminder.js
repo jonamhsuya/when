@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Switch, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
-// import * as Notifications from 'expo-notifications';
+import * as Notifications from 'expo-notifications';
 
 import styles from '../styles/styles';
 import storage from '../storage/storage';
@@ -30,8 +30,7 @@ const ViewReminder = ({ route, navigation }) => {
         }
         else {
             // await cancelNotification(notifID);
-            const newNotifID = '';
-            // const newNotifID = await schedulePushNotification();
+            const newNotifID = await schedulePushNotification();
             storage.load({
                 key: 'reminders',
             })
@@ -49,15 +48,15 @@ const ViewReminder = ({ route, navigation }) => {
         }
     }
 
-    // const schedulePushNotification = async () => {
-    //     const id = await Notifications.scheduleNotificationAsync({
-    //         content: {
-    //             title: title,
-    //         },
-    //         trigger: date,
-    //     });
-    //     return id;
-    // };
+    const schedulePushNotification = async () => {
+        const id = await Notifications.scheduleNotificationAsync({
+            content: {
+                title: title,
+            },
+            trigger: date,
+        });
+        return id;
+    };
 
     // const cancelNotification = async (notifID) => {
     //     await Notifications.cancelScheduledNotificationAsync(notifID);
