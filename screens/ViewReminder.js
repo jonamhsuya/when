@@ -29,7 +29,7 @@ const ViewReminder = ({ route, navigation }) => {
             alert('Please enter a message.')
         }
         else {
-            // await cancelNotification(notifID);
+            await cancelNotification(notifID);
             const newNotifID = await schedulePushNotification();
             storage.load({
                 key: 'reminders',
@@ -58,16 +58,16 @@ const ViewReminder = ({ route, navigation }) => {
         return id;
     };
 
-    // const cancelNotification = async (notifID) => {
-    //     await Notifications.cancelScheduledNotificationAsync(notifID);
-    // }
+    const cancelNotification = async (notifID) => {
+        await Notifications.cancelScheduledNotificationAsync(notifID);
+    }
 
     const deleteAndReturn = () => {
         storage.load({
             key: 'reminders',
         })
             .then(ret => {
-                // cancelNotification(ret[index]['notifID']);
+                cancelNotification(notifID);
                 ret.splice(index, 1);
                 storage.save({
                     key: 'reminders',

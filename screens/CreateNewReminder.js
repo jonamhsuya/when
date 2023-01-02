@@ -26,7 +26,7 @@ const CreateNewReminder = ({ navigation }) => {
             alert('Please enter a message.')
         }
         else {
-            const notifID = schedulePushNotification();
+            const notifID = await schedulePushNotification();
             storage.load({
                 key: 'reminders',
             })
