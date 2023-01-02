@@ -25,6 +25,9 @@ PODS:
   - EXSplashScreen (0.17.5):
     - ExpoModulesCore
     - React-Core
+  - EXTaskManager (11.0.1):
+    - ExpoModulesCore
+    - UMAppLoader
   - FBLazyVector (0.70.5)
   - FBReactNativeSpec (0.70.5):
     - RCT-Folly (= 2021.07.22.00)
@@ -323,6 +326,7 @@ PODS:
   - RNScreens (3.18.2):
     - React-Core
     - React-RCTImage
+  - UMAppLoader (4.0.0)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -339,6 +343,7 @@ DEPENDENCIES:
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - EXSpeech (from `../node_modules/expo-speech/ios`)
   - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
+  - EXTaskManager (from `../node_modules/expo-task-manager/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
@@ -373,6 +378,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNScreens (from `../node_modules/react-native-screens`)
+  - UMAppLoader (from `../node_modules/unimodules-app-loader/ios`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -406,6 +412,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-speech/ios"
   EXSplashScreen:
     :path: "../node_modules/expo-splash-screen/ios"
+  EXTaskManager:
+    :path: "../node_modules/expo-task-manager/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   FBReactNativeSpec:
@@ -472,6 +480,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/datetimepicker"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  UMAppLoader:
+    :path: "../node_modules/unimodules-app-loader/ios"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -489,6 +499,7 @@ SPEC CHECKSUMS:
   ExpoModulesCore: 8211c89bcc3ba86e2d02c54b1d31f1fa81acb6de
   EXSpeech: b1e02f7d9d4e9731133da25ee4b26cc0740707ed
   EXSplashScreen: 3e989924f61a8dd07ee4ea584c6ba14be9b51949
+  EXTaskManager: 0afcc6fd813dec5dee98aa5ec4f22c2a840dd4a7
   FBLazyVector: affa4ba1bfdaac110a789192f4d452b053a86624
   FBReactNativeSpec: fe8b5f1429cfe83a8d72dc8ed61dc7704cac8745
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
@@ -523,6 +534,7 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 8616bd5a58af409453ea4e1b246521bb76578d60
   RNDateTimePicker: 0530a73a6f3a1a85814cbde0802736993b9e675e
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
+  UMAppLoader: 354d71d2d2ce8d6c19fb13d72b9c8209b18a8c56
   Yoga: eca980a5771bf114c41a754098cd85e6e0d90ed7
 
 PODFILE CHECKSUM: 48c403f81147a85c74ed3fc77fec3901ea972fd8

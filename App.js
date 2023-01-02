@@ -57,45 +57,7 @@ const App = () => {
         shouldSetBadge: true,
       }),
       handleSuccess: async (notifID) => {
-        let temp;
-        storage.load({
-          key: 'reminders',
-        })
-          .then(ret => {
-            for (let i = 0; i < ret.length; i++) {
-              if (notifID.includes(ret[i]['notifID'])) {
-                if (ret[i]['shouldSpeak']) {
-                  setTimeout(() => Speech.speak(ret[i]['message']), 1000);
-                }
-                setTimeout(() => {
-                  temp = ret[i];
-                  ret.splice(i, 1);
-                  storage.save({
-                    key: 'reminders',
-                    data: ret,
-                    expires: null,
-                  });
-                  storage.load({
-                    key: 'pastReminders',
-                  })
-                    .then(ret => {
-                      ret.push(temp);
-                      storage.save({
-                        key: 'pastReminders',
-                        data: ret,
-                        expires: null,
-                      });
-                    })
-                    .catch(err => {
-                      console.log(err);
-                    })
-                }, 1001);
-              }
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          })
+        onNotification(notifID);
       }
     });
   });
@@ -176,3 +138,45 @@ const askPermissions = async () => {
   }
   return true;
 };
+
+const onNotification = (notifID) => {
+  let temp;
+  storage.load({
+    key: 'reminders',
+  })
+    .then(ret => {
+      for (let i = 0; i < ret.length; i++) {
+        if (notifID.includes(ret[i]['notifID'])) {
+          if (ret[i]['shouldSpeak']) {
+            setTimeout(() => Speech.speak(ret[i]['message']), 1000);
+          }
+          setTimeout(() => {
+            temp = ret[i];
+            ret.splice(i, 1);
+            storage.save({
+              key: 'reminders',
+              data: ret,
+              expires: null,
+            });
+            storage.load({
+              key: 'pastReminders',
+            })
+              .then(ret => {
+                ret.push(temp);
+                storage.save({
+                  key: 'pastReminders',
+                  data: ret,
+                  expires: null,
+                });
+              })
+              .catch(err => {
+                console.log(err);
+              })
+          }, 1001);
+        }
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    })
+}
