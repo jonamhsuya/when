@@ -41,10 +41,12 @@ const MyReminders = ({ navigation }) => {
     }
 
     const formatRepeat = (repeat, minutes) => {
-        if (repeat !== 'By the Minute') {
-            return repeat;
+        if (repeat === 'Never') {
+            return '';
+        } else if (repeat !== 'By the Minute') {
+            return ' | ' + repeat;
         } else {
-            return 'Every ' + (minutes === '1' ? 'Minute' : minutes + ' Minutes');
+            return ' | Every ' + (minutes === '1' ? 'Minute' : minutes + ' Minutes');
         }
     }
 
@@ -65,7 +67,7 @@ const MyReminders = ({ navigation }) => {
             <View key={index} style={styles.reminder}>
                 <View>
                     <Text style={styles.reminderText}>{item['title']}</Text>
-                    <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}  |  {formatRepeat(item['repeat'], item['minutes'])}</Text>
+                    <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}{formatRepeat(item['repeat'], item['minutes'])}</Text>
                 </View>
                 <TouchableOpacity
                     onPress={() => navigation.navigate('ViewReminder', {
@@ -90,7 +92,7 @@ const MyReminders = ({ navigation }) => {
     return (
         <SafeAreaView>
             {reminders.length === 0 ? noReminders :
-                <ScrollView style={styles.reminderView} scrollEnabled={data.length * 50 > Dimensions.get('window').height - 400}>
+                <ScrollView style={styles.reminderView} scrollEnabled={data.length * 65 > Dimensions.get('window').height - 400}>
                     {reminders}
                 </ScrollView>}
             <TouchableOpacity

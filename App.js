@@ -31,7 +31,6 @@ const App = () => {
       .catch(err => {
         // user is accessing app for the first time
         askPermissions();
-
         // save empty array in storage to store future reminders and past reminders
         storage.save({
           key: 'reminders',
@@ -141,7 +140,6 @@ const askPermissions = async () => {
 };
 
 const onNotification = (notifID) => {
-  let temp;
   storage.load({
     key: 'reminders',
   })
@@ -152,40 +150,26 @@ const onNotification = (notifID) => {
             setTimeout(() => Speech.speak(ret[i]['message']), 1000);
           }
           setTimeout(async () => {
+            let temp = ret[i];
             let repeat = ret[i]['repeat'];
             if (repeat === 'Never') {
-              temp = ret[i];
               ret.splice(i, 1);
               storage.save({
                 key: 'reminders',
                 data: ret,
                 expires: null,
               });
-              storage.load({
-                key: 'pastReminders',
-              })
-                .then(ret => {
-                  ret.push(temp);
-                  storage.save({
-                    key: 'pastReminders',
-                    data: ret,
-                    expires: null,
-                  });
-                })
-                .catch(err => {
-                  console.log(err);
-                })
             } else {
-              let oldDate = ret[i]['date'];
+              let oldDate = new Date(ret[i]['date']);
               let newDate;
               if (repeat === 'By the Minute') {
                 newDate = new Date(new Date(oldDate).getTime() + ret[i]['minutes'] * 60 * 1000);
               } else if (repeat === 'Hourly') {
-                newDate = new Date(new Date(oldDate).getTime() + 3600 * 1000);
+                newDate = new Date(new Date(oldDate).getTime() + 60 * 60 * 1000);
               } else if (repeat === 'Daily') {
-                newDate = new Date(new Date(oldDate).getTime() + 24 * 3600 * 1000);
+                newDate = new Date(new Date(oldDate).getTime() + 24 * 60 * 60 * 1000);
               } else if (repeat === 'Weekly') {
-                newDate = new Date(new Date(oldDate).getTime() + 7 * 24 * 3600 * 1000);
+                newDate = new Date(new Date(oldDate).getTime() + 7 * 24 * 60 * 60 * 1000);
               } else if (repeat === 'Monthly') {
                 newDate = new Date(new Date(oldDate).setMonth(oldDate.getMonth() === 12 ? 1 : oldDate.getMonth() + 1));
               } else {
@@ -207,6 +191,20 @@ const onNotification = (notifID) => {
                 expires: null,
               });
             }
+            storage.load({
+              key: 'pastReminders',
+            })
+              .then(ret => {
+                ret.unshift(temp);
+                storage.save({
+                  key: 'pastReminders',
+                  data: ret,
+                  expires: null,
+                });
+              })
+              .catch(err => {
+                console.log(err);
+              })
           }, 1001);
         }
       }

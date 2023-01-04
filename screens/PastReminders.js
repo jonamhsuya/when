@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Text, TouchableOpacity, View, ScrollView } from 'react-native';
+import { Text, TouchableOpacity, View, ScrollView, Dimensions, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -40,6 +40,33 @@ const PastReminders = ({ navigation }) => {
         return formattedTime;
     }
 
+    const formatRepeat = (repeat, minutes) => {
+        if (repeat === 'Never') {
+            return '';
+        } else if (repeat !== 'By the Minute') {
+            return ' | ' + repeat;
+        } else {
+            return ' | Every ' + (minutes === '1' ? 'Minute' : minutes + ' Minutes');
+        }
+    }
+
+    const deleteAll = () => {
+        storage.load({
+            key: 'pastReminders',
+        })
+            .then(ret => {
+                storage.save({
+                    key: 'pastReminders',
+                    data: [],
+                    expires: null
+                })
+                setData([]);
+            })
+            .catch(err => {
+                console.warn(err.message);
+            });
+    }
+
     useFocusEffect(() => {
         storage.load({
             key: 'pastReminders',
@@ -57,7 +84,7 @@ const PastReminders = ({ navigation }) => {
             <View key={index} style={styles.reminder}>
                 <View>
                     <Text style={styles.reminderText}>{item['title']}</Text>
-                    <Text style={styles.reminderDate}>{formatDate(item['date'])}, {formatTime(item['date'])}</Text>
+                    <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}{formatRepeat(item['repeat'], item['minutes'])}</Text>
                 </View>
                 <TouchableOpacity
                     onPress={() => navigation.navigate('ViewPastReminder', {
@@ -66,7 +93,9 @@ const PastReminders = ({ navigation }) => {
                         date: item['date'],
                         notifID: item['notifID'],
                         shouldSpeak: item['shouldSpeak'],
-                        message: item['message']
+                        message: item['message'],
+                        repeat: item['repeat'],
+                        minutes: item['minutes']
                     })}
                 >
                     <MaterialCommunityIcons name={'lead-pencil'} size={25} />
@@ -79,10 +108,27 @@ const PastReminders = ({ navigation }) => {
 
     return (
         <SafeAreaView>
-            {pastReminders.length === 0 ? noPastReminders : 
-            <ScrollView style={styles.reminderView}>
-                {pastReminders}
-            </ScrollView>}
+            {pastReminders.length === 0 ? noPastReminders :
+                <ScrollView style={styles.reminderView} scrollEnabled={data.length * 65 > Dimensions.get('window').height - 400}>
+                    {pastReminders}
+                </ScrollView>}
+            {pastReminders.length > 0 &&
+            <TouchableOpacity
+                style={styles.longButton}
+                onPress={() => {
+                    Alert.alert(
+                        "Alert",
+                        "Are you sure you want to clear all past reminders?",
+                        [
+                          { text: "Cancel", style: "cancel" },
+                          { text: "OK", onPress: deleteAll }
+                        ]
+                    )
+                }}
+            >
+                <MaterialCommunityIcons name={'trash-can-outline'} size={40} style={{ alignSelf: 'center' }} color='black' />
+                {/* <Text style={{ fontSize: 36, textAlign: 'center' }}>+</Text> */}
+            </TouchableOpacity>}
         </SafeAreaView>
     );
 
