@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Button } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -150,28 +151,62 @@ const onNotification = (notifID) => {
           if (ret[i]['shouldSpeak']) {
             setTimeout(() => Speech.speak(ret[i]['message']), 1000);
           }
-          setTimeout(() => {
-            temp = ret[i];
-            ret.splice(i, 1);
-            storage.save({
-              key: 'reminders',
-              data: ret,
-              expires: null,
-            });
-            storage.load({
-              key: 'pastReminders',
-            })
-              .then(ret => {
-                ret.push(temp);
-                storage.save({
-                  key: 'pastReminders',
-                  data: ret,
-                  expires: null,
-                });
+          setTimeout(async () => {
+            let repeat = ret[i]['repeat'];
+            if (repeat === 'Never') {
+              temp = ret[i];
+              ret.splice(i, 1);
+              storage.save({
+                key: 'reminders',
+                data: ret,
+                expires: null,
+              });
+              storage.load({
+                key: 'pastReminders',
               })
-              .catch(err => {
-                console.log(err);
-              })
+                .then(ret => {
+                  ret.push(temp);
+                  storage.save({
+                    key: 'pastReminders',
+                    data: ret,
+                    expires: null,
+                  });
+                })
+                .catch(err => {
+                  console.log(err);
+                })
+            } else {
+              let oldDate = ret[i]['date'];
+              let newDate;
+              if (repeat === 'By the Minute') {
+                newDate = new Date(new Date(oldDate).getTime() + ret[i]['minutes'] * 60 * 1000);
+              } else if (repeat === 'Hourly') {
+                newDate = new Date(new Date(oldDate).getTime() + 3600 * 1000);
+              } else if (repeat === 'Daily') {
+                newDate = new Date(new Date(oldDate).getTime() + 24 * 3600 * 1000);
+              } else if (repeat === 'Weekly') {
+                newDate = new Date(new Date(oldDate).getTime() + 7 * 24 * 3600 * 1000);
+              } else if (repeat === 'Monthly') {
+                newDate = new Date(new Date(oldDate).setMonth(oldDate.getMonth() === 12 ? 1 : oldDate.getMonth() + 1));
+              } else {
+                newDate = new Date(new Date(oldDate).setFullYear(oldDate.getFullYear() + 1));
+              }
+              let newNotifID = await schedulePushNotification(ret[i]['title'], newDate);
+              ret[i] = {
+                'title': ret[i]['title'],
+                'date': newDate,
+                'notifID': newNotifID,
+                'shouldSpeak': ret[i]['shouldSpeak'],
+                'message': ret[i]['message'],
+                'repeat': ret[i]['repeat'],
+                'minutes': ret[i]['minutes']
+              };
+              storage.save({
+                key: 'reminders',
+                data: ret,
+                expires: null,
+              });
+            }
           }, 1001);
         }
       }
@@ -180,3 +215,13 @@ const onNotification = (notifID) => {
       console.log(err);
     })
 }
+
+const schedulePushNotification = async (title, date) => {
+  const id = await Notifications.scheduleNotificationAsync({
+    content: {
+      title: title,
+    },
+    trigger: date,
+  });
+  return id;
+};

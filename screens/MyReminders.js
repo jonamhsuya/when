@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Text, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { Text, TouchableOpacity, View, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import styles from '../styles/styles';
 import storage from '../storage/storage';
@@ -14,9 +15,17 @@ const MyReminders = ({ navigation }) => {
 
     const formatDate = (dateString) => {
         let date = new Date(dateString)
+        let now = new Date(Date.now());
         let formattedDate = months[date.getMonth()] + ' ' + date.getDate()
-        if (new Date(Date.now()).getFullYear !== date.getFullYear()) {
+        if (now.getFullYear() !== date.getFullYear()) {
             formattedDate += ', ' + date.getFullYear();
+        }
+        else if (now.getMonth() === date.getMonth()) {
+            if (now.getDate() === date.getDate()) {
+                formattedDate = 'Today';
+            } else if (now.getDate() === date.getDate() - 1) {
+                formattedDate = 'Tomorrow';
+            }
         }
         return formattedDate;
     }
@@ -29,6 +38,14 @@ const MyReminders = ({ navigation }) => {
         let minutes = time.getMinutes() < 10 ? '0' + String(time.getMinutes()) : String(time.getMinutes());
         formattedTime += hours + ':' + minutes + ' ' + AMPM;
         return formattedTime;
+    }
+
+    const formatRepeat = (repeat, minutes) => {
+        if (repeat !== 'By the Minute') {
+            return repeat;
+        } else {
+            return 'Every ' + (minutes === '1' ? 'Minute' : minutes + ' Minutes');
+        }
     }
 
     useFocusEffect(() => {
@@ -45,27 +62,30 @@ const MyReminders = ({ navigation }) => {
 
     const reminders = data.map((item, index) => {
         return (
-            <TouchableOpacity
-                key={index}
-                style={styles.reminder}
-                onPress={() => navigation.navigate('ViewReminder', {
-                    key: index,
-                    title: item['title'],
-                    date: item['date'],
-                    notifID: item['notifID'],
-                    shouldSpeak: item['shouldSpeak'],
-                    message: item['message']
-                })}
-            >
-                <>
+            <View key={index} style={styles.reminder}>
+                <View>
                     <Text style={styles.reminderText}>{item['title']}</Text>
-                    <Text style={styles.reminderDate}>{formatTime(item['date'])}, {formatDate(item['date'])}</Text>
-                </>
-            </TouchableOpacity>
+                    <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}  |  {formatRepeat(item['repeat'], item['minutes'])}</Text>
+                </View>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('ViewReminder', {
+                        key: index,
+                        title: item['title'],
+                        date: item['date'],
+                        notifID: item['notifID'],
+                        shouldSpeak: item['shouldSpeak'],
+                        message: item['message'],
+                        repeat: item['repeat'],
+                        minutes: item['minutes']
+                    })}
+                >
+                    <MaterialCommunityIcons name={'lead-pencil'} size={25} />
+                </TouchableOpacity>
+            </View>
         )
     });
 
-    const noReminders = <Text style={styles.noReminders}>No reminders yet. Create a new one!</Text>
+    const noReminders = <Text style={styles.noReminders}>No reminders. Create a new one!</Text>
 
     return (
         <SafeAreaView>
@@ -74,10 +94,11 @@ const MyReminders = ({ navigation }) => {
                     {reminders}
                 </ScrollView>}
             <TouchableOpacity
-                style={styles.topButton}
-                onPress={() => {navigation.navigate('CreateNewReminder')}}
+                style={styles.longButton}
+                onPress={() => { navigation.navigate('CreateNewReminder') }}
             >
-                <Text style={{ fontSize: 36, textAlign: 'center' }}>+</Text>
+                <MaterialCommunityIcons name={'playlist-plus'} size={40} style={{ alignSelf: 'center' }} color='black' />
+                {/* <Text style={{ fontSize: 36, textAlign: 'center' }}>+</Text> */}
             </TouchableOpacity>
         </SafeAreaView>
     );

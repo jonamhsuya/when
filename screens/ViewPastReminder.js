@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Switch, ScrollView } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Notifications from 'expo-notifications';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import styles from '../styles/styles';
 import storage from '../storage/storage';
@@ -102,7 +103,7 @@ const ViewPastReminder = ({ route, navigation }) => {
         setShouldSpeak(previousState => !previousState);
     };
 
-    
+
     return (
         <SafeAreaView>
             <ScrollView
@@ -117,7 +118,7 @@ const ViewPastReminder = ({ route, navigation }) => {
                     onChangeText={(t) => setTitle(t)}
                 />
                 <View style={styles.createReminderGroup}>
-                    <View style={styles.box}>
+                    <View style={styles.filledBox}>
                         <Text style={styles.boxText}>Date</Text>
                     </View>
                     <DateTimePicker
@@ -130,7 +131,7 @@ const ViewPastReminder = ({ route, navigation }) => {
                     />
                 </View>
                 <View style={styles.createReminderGroup}>
-                    <View style={styles.box}>
+                    <View style={styles.filledBox}>
                         <Text style={styles.boxText}>Time</Text>
                     </View>
                     <DateTimePicker
@@ -163,18 +164,22 @@ const ViewPastReminder = ({ route, navigation }) => {
                         onChangeText={(m) => setMessage(m)}
                         style={styles.smallTextInput}
                     />}
-                <TouchableOpacity
-                    style={styles.topButton}
-                    onPress={addAndReturn}
-                >
-                    <Text style={{ fontSize: 24, textAlign: 'center' }}>Reschedule</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={deleteAndReturn}
-                >
-                    <Text style={{ fontSize: 24, textAlign: 'center', color: 'red' }}>Delete</Text>
-                </TouchableOpacity>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                        style={styles.shortButton}
+                        onPress={addAndReturn}
+                    >
+                        <MaterialCommunityIcons name={'plus'} size={40} style={{ alignSelf: 'center' }} color='black' />
+                        {/* <Text style={{ fontSize: 24, textAlign: 'center' }}>Reschedule</Text> */}
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.shortButton}
+                        onPress={deleteAndReturn}
+                    >
+                        <MaterialCommunityIcons name={'trash-can-outline'} size={40} style={{ alignSelf: 'center' }} color='black' />
+                        {/* <Text style={{ fontSize: 24, textAlign: 'center', color: 'red' }}>Delete</Text> */}
+                    </TouchableOpacity>
+                </View>
             </ScrollView>
         </SafeAreaView>
     );

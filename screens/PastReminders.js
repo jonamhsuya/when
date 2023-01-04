@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Text, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, TouchableOpacity, View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import styles from '../styles/styles';
 import storage from '../storage/storage';
@@ -14,9 +15,17 @@ const PastReminders = ({ navigation }) => {
 
     const formatDate = (dateString) => {
         let date = new Date(dateString)
+        let now = new Date(Date.now());
         let formattedDate = months[date.getMonth()] + ' ' + date.getDate()
-        if (new Date(Date.now()).getFullYear !== date.getFullYear()) {
+        if (now.getFullYear() !== date.getFullYear()) {
             formattedDate += ', ' + date.getFullYear();
+        }
+        else if (now.getMonth() === date.getMonth()) {
+            if (now.getDate() === date.getDate()) {
+                formattedDate = 'Today';
+            } else if (now.getDate() === date.getDate() + 1) {
+                formattedDate = 'Yesterday';
+            }
         }
         return formattedDate;
     }
@@ -45,27 +54,28 @@ const PastReminders = ({ navigation }) => {
 
     const pastReminders = data.map((item, index) => {
         return (
-            <TouchableOpacity
-                key={index}
-                style={styles.reminder}
-                onPress={() => navigation.navigate('ViewPastReminder', {
-                    key: index,
-                    title: item['title'],
-                    date: item['date'],
-                    notifID: item['notifID'],
-                    shouldSpeak: item['shouldSpeak'],
-                    message: item['message']
-                })}
-            >
-                <>
+            <View key={index} style={styles.reminder}>
+                <View>
                     <Text style={styles.reminderText}>{item['title']}</Text>
-                    <Text style={styles.reminderDate}>{formatTime(item['date'])}, {formatDate(item['date'])}</Text>
-                </>
-            </TouchableOpacity>
+                    <Text style={styles.reminderDate}>{formatDate(item['date'])}, {formatTime(item['date'])}</Text>
+                </View>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('ViewPastReminder', {
+                        key: index,
+                        title: item['title'],
+                        date: item['date'],
+                        notifID: item['notifID'],
+                        shouldSpeak: item['shouldSpeak'],
+                        message: item['message']
+                    })}
+                >
+                    <MaterialCommunityIcons name={'lead-pencil'} size={25} />
+                </TouchableOpacity>
+            </View>
         )
     });
 
-    const noPastReminders = <Text style={styles.noReminders}>No past reminders yet.</Text>
+    const noPastReminders = <Text style={styles.noReminders}>No past reminders.</Text>
 
     return (
         <SafeAreaView>
