@@ -31,6 +31,9 @@ const CreateNewReminder = ({ navigation }) => {
         else if (shouldSpeak && message === '') {
             alert('Please enter a message.')
         }
+        else if (repeat === '') {
+            alert('Please select a repeat frequency.')
+        }
         else {
             const notifID = await schedulePushNotification();
             storage.load({

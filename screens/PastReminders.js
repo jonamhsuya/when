@@ -90,8 +90,6 @@ const PastReminders = ({ navigation }) => {
                     onPress={() => navigation.navigate('ViewPastReminder', {
                         key: index,
                         title: item['title'],
-                        date: item['date'],
-                        notifID: item['notifID'],
                         shouldSpeak: item['shouldSpeak'],
                         message: item['message'],
                         repeat: item['repeat'],

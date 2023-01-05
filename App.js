@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Button } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -171,7 +170,7 @@ const onNotification = (notifID) => {
               } else if (repeat === 'Weekly') {
                 newDate = new Date(new Date(oldDate).getTime() + 7 * 24 * 60 * 60 * 1000);
               } else if (repeat === 'Monthly') {
-                newDate = new Date(new Date(oldDate).setMonth(oldDate.getMonth() === 12 ? 1 : oldDate.getMonth() + 1));
+                newDate = new Date(new Date(oldDate).setMonth(oldDate.getMonth() + 1));
               } else {
                 newDate = new Date(new Date(oldDate).setFullYear(oldDate.getFullYear() + 1));
               }

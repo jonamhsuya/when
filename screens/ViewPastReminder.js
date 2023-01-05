@@ -14,8 +14,8 @@ const ViewPastReminder = ({ route, navigation }) => {
 
     const [index, setIndex] = useState(route.params['key']);
     const [title, setTitle] = useState(route.params['title']);
-    const [date, setDate] = useState(new Date(route.params['date']));
-    const [time, setTime] = useState(new Date(route.params['date']));
+    const [date, setDate] = useState(new Date(Date.now()));
+    const [time, setTime] = useState(new Date(Date.now()));
     const [shouldSpeak, setShouldSpeak] = useState(route.params['shouldSpeak']);
     const [message, setMessage] = useState(route.params['message']);
     const [repeat, setRepeat] = useState(route.params['repeat']);
@@ -32,6 +32,9 @@ const ViewPastReminder = ({ route, navigation }) => {
         }
         else if (shouldSpeak && message === '') {
             alert('Please enter a message.');
+        }
+        else if (repeat === '') {
+            alert('Please select a repeat frequency.')
         }
         else {
             const notifID = await schedulePushNotification();
