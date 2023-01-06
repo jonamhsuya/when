@@ -62,38 +62,32 @@ const MyReminders = ({ navigation }) => {
             });
     });
 
-    const reminders = data.map((item, index) => {
-        return (
-            <View key={index} style={styles.reminder}>
-                <View>
-                    <Text style={styles.reminderText}>{item['title']}</Text>
-                    <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}{formatRepeat(item['repeat'], item['minutes'])}</Text>
-                </View>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('ViewReminder', {
-                        key: index,
-                        title: item['title'],
-                        date: item['date'],
-                        notifID: item['notifID'],
-                        shouldSpeak: item['shouldSpeak'],
-                        message: item['message'],
-                        repeat: item['repeat'],
-                        minutes: item['minutes']
-                    })}
-                >
-                    <MaterialCommunityIcons name={'lead-pencil'} size={25} />
-                </TouchableOpacity>
-            </View>
-        )
-    });
-
-    const noReminders = <Text style={styles.noReminders}>No reminders. Create a new one!</Text>
-
     return (
         <SafeAreaView>
-            {reminders.length === 0 ? noReminders :
+            {data.length === 0 ? noReminders :
                 <ScrollView style={styles.reminderView} scrollEnabled={data.length * 65 > Dimensions.get('window').height - 400}>
-                    {reminders}
+                    {data.map((item, index) => (
+                        <View key={index} style={styles.reminder}>
+                            <View>
+                                <Text style={styles.reminderText}>{item['title']}</Text>
+                                <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}{formatRepeat(item['repeat'], item['minutes'])}</Text>
+                            </View>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('ViewReminder', {
+                                    key: index,
+                                    title: item['title'],
+                                    date: item['date'],
+                                    notifID: item['notifID'],
+                                    shouldSpeak: item['shouldSpeak'],
+                                    message: item['message'],
+                                    repeat: item['repeat'],
+                                    minutes: item['minutes']
+                                })}
+                            >
+                                <MaterialCommunityIcons name={'lead-pencil'} size={25} />
+                            </TouchableOpacity>
+                        </View>
+                    ))}
                 </ScrollView>}
             <TouchableOpacity
                 style={styles.longButton}
