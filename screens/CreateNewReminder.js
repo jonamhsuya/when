@@ -12,8 +12,8 @@ import storage from '../storage/storage';
 const CreateNewReminder = ({ navigation }) => {
 
     const [title, setTitle] = useState('');
-    const [date, setDate] = useState(new Date(Date.now()));
-    const [time, setTime] = useState(new Date(Date.now()));
+    const [date, setDate] = useState(new Date(Date.now() + 60000));
+    const [time, setTime] = useState(new Date(Date.now() + 60000));
     const [shouldSpeak, setShouldSpeak] = useState(false);
     const [message, setMessage] = useState(title);
     const [repeat, setRepeat] = useState('');

@@ -14,8 +14,8 @@ const ViewPastReminder = ({ route, navigation }) => {
 
     const [index, setIndex] = useState(route.params['key']);
     const [title, setTitle] = useState(route.params['title']);
-    const [date, setDate] = useState(new Date(Date.now()));
-    const [time, setTime] = useState(new Date(Date.now()));
+    const [date, setDate] = useState(new Date(Date.now() + 60000));
+    const [time, setTime] = useState(new Date(Date.now() + 60000));
     const [shouldSpeak, setShouldSpeak] = useState(route.params['shouldSpeak']);
     const [message, setMessage] = useState(route.params['message']);
     const [repeat, setRepeat] = useState(route.params['repeat']);
