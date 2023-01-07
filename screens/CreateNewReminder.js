@@ -12,14 +12,14 @@ import storage from '../storage/storage';
 const CreateNewReminder = ({ navigation }) => {
 
     const [title, setTitle] = useState('');
-    const [date, setDate] = useState(new Date(Date.now() + 60000));
-    const [time, setTime] = useState(new Date(Date.now() + 60000));
+    const [date, setDate] = useState(new Date(Date.now()));
+    const [time, setTime] = useState(new Date(Date.now()));
     const [shouldSpeak, setShouldSpeak] = useState(false);
     const [message, setMessage] = useState(title);
     const [repeat, setRepeat] = useState('');
     const [minutes, setMinutes] = useState(0);
 
-    const frequencies = ["Never", "By the Minute", "Hourly", "Daily", "Weekly", "Monthly", "Yearly"];
+    const frequencies = ['Never', 'By the Minute', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Yearly'];
 
     const addAndReturn = async () => {
         if (title === '') {

@@ -40,16 +40,6 @@ const PastReminders = ({ navigation }) => {
         return formattedTime;
     }
 
-    const formatRepeat = (repeat, minutes) => {
-        if (repeat === 'Never') {
-            return '';
-        } else if (repeat !== 'By the Minute') {
-            return ' | ' + repeat;
-        } else {
-            return ' | Every ' + (minutes === '1' ? 'Minute' : minutes + ' Minutes');
-        }
-    }
-
     const deleteAll = () => {
         storage.load({
             key: 'pastReminders',
@@ -84,7 +74,7 @@ const PastReminders = ({ navigation }) => {
             <View key={index} style={styles.reminder}>
                 <View>
                     <Text style={styles.reminderText}>{item['title']}</Text>
-                    <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}{formatRepeat(item['repeat'], item['minutes'])}</Text>
+                    <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}</Text>
                 </View>
                 <TouchableOpacity
                     onPress={() => navigation.navigate('ViewPastReminder', {
@@ -115,11 +105,11 @@ const PastReminders = ({ navigation }) => {
                 style={styles.longButton}
                 onPress={() => {
                     Alert.alert(
-                        "Alert",
-                        "Are you sure you want to clear all past reminders?",
+                        'Alert',
+                        'Are you sure you want to clear all past reminders?',
                         [
-                          { text: "Cancel", style: "cancel" },
-                          { text: "OK", onPress: deleteAll }
+                          { text: 'Cancel', style: 'cancel' },
+                          { text: 'OK', onPress: deleteAll }
                         ]
                     )
                 }}

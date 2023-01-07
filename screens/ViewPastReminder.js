@@ -14,14 +14,14 @@ const ViewPastReminder = ({ route, navigation }) => {
 
     const [index, setIndex] = useState(route.params['key']);
     const [title, setTitle] = useState(route.params['title']);
-    const [date, setDate] = useState(new Date(Date.now() + 60000));
-    const [time, setTime] = useState(new Date(Date.now() + 60000));
+    const [date, setDate] = useState(new Date(Date.now()));
+    const [time, setTime] = useState(new Date(Date.now()));
     const [shouldSpeak, setShouldSpeak] = useState(route.params['shouldSpeak']);
     const [message, setMessage] = useState(route.params['message']);
     const [repeat, setRepeat] = useState(route.params['repeat']);
     const [minutes, setMinutes] = useState(route.params['minutes']);
 
-    const frequencies = ["Never", "By the Minute", "Hourly", "Daily", "Weekly", "Monthly", "Yearly"];
+    const frequencies = ['Never', 'By the Minute', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Yearly'];
 
     const addAndReturn = async () => {
         if (title === '') {
@@ -57,7 +57,15 @@ const ViewPastReminder = ({ route, navigation }) => {
                 key: 'reminders',
             })
                 .then(ret => {
-                    ret.push({ 'title': title, 'date': date, 'notifID': notifID, 'shouldSpeak': shouldSpeak, 'message': message });
+                    ret.push({
+                        'title': title,
+                        'date': date,
+                        'notifID': notifID,
+                        'shouldSpeak': shouldSpeak,
+                        'message': message,
+                        'repeat': repeat,
+                        'minutes': minutes
+                    });
                     storage.save({
                         key: 'reminders',
                         data: ret

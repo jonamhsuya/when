@@ -44,9 +44,9 @@ const MyReminders = ({ navigation }) => {
         if (repeat === 'Never') {
             return '';
         } else if (repeat !== 'By the Minute') {
-            return ' | ' + repeat;
+            return '  |  ' + repeat;
         } else {
-            return ' | Every ' + (minutes === '1' ? 'Minute' : minutes + ' Minutes');
+            return '  |  Every ' + (minutes === '1' ? 'Minute' : minutes + ' Minutes');
         }
     }
 
@@ -61,6 +61,8 @@ const MyReminders = ({ navigation }) => {
                 console.warn(err.message);
             });
     });
+
+    const noReminders = <Text style={styles.noReminders}>No reminders. Create a new one!</Text>
 
     return (
         <SafeAreaView>

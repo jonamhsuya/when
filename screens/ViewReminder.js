@@ -22,7 +22,7 @@ const ViewReminder = ({ route, navigation }) => {
     const [repeat, setRepeat] = useState(route.params['repeat']);
     const [minutes, setMinutes] = useState(route.params['minutes']);
 
-    const frequencies = ["Never", "By the Minute", "Hourly", "Daily", "Weekly", "Monthly", "Yearly"];
+    const frequencies = ['Never', 'By the Minute', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Yearly'];
 
     const saveAndReturn = async () => {
         if (title === '') {
@@ -44,7 +44,7 @@ const ViewReminder = ({ route, navigation }) => {
                     ret[index] = {
                         'title': title,
                         'date': date,
-                        'notifID': notifID,
+                        'notifID': newNotifID,
                         'shouldSpeak': shouldSpeak,
                         'message': message,
                         'repeat': repeat,

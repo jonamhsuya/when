@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -19,6 +19,8 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
+
+  const [title, setTitle] = useState('Home');
 
   useEffect(() => {
     storage.load({
@@ -61,6 +63,109 @@ const App = () => {
     });
   });
 
+
+  const askPermissions = async () => {
+    const { status: existingStatus } = await Notifications.requestPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      return false;
+    }
+    return true;
+  };
+
+  const onNotification = (notifID) => {
+    storage.load({
+      key: 'reminders',
+    })
+      .then(ret => {
+        for (let i = 0; i < ret.length; i++) {
+          if (notifID.includes(ret[i]['notifID'])) {
+            if (ret[i]['shouldSpeak']) {
+              setTimeout(() => Speech.speak(ret[i]['message']), 1000);
+            }
+            setTimeout(async () => {
+              let temp = ret[i];
+              let repeat = ret[i]['repeat'];
+              if (repeat === 'Never') {
+                ret.splice(i, 1);
+                storage.save({
+                  key: 'reminders',
+                  data: ret,
+                  expires: null,
+                });
+                setTitle(' ');
+                setTitle('Home');
+              } else {
+                let oldDate = new Date(ret[i]['date']);
+                let newDate;
+                if (repeat === 'By the Minute') {
+                  newDate = new Date(new Date(oldDate).getTime() + ret[i]['minutes'] * 60 * 1000);
+                } else if (repeat === 'Hourly') {
+                  newDate = new Date(new Date(oldDate).getTime() + 60 * 60 * 1000);
+                } else if (repeat === 'Daily') {
+                  newDate = new Date(new Date(oldDate).getTime() + 24 * 60 * 60 * 1000);
+                } else if (repeat === 'Weekly') {
+                  newDate = new Date(new Date(oldDate).getTime() + 7 * 24 * 60 * 60 * 1000);
+                } else if (repeat === 'Monthly') {
+                  newDate = new Date(new Date(oldDate).setMonth(oldDate.getMonth() + 1));
+                } else {
+                  newDate = new Date(new Date(oldDate).setFullYear(oldDate.getFullYear() + 1));
+                }
+                let newNotifID = await schedulePushNotification(ret[i]['title'], newDate);
+                ret[i] = {
+                  'title': ret[i]['title'],
+                  'date': newDate,
+                  'notifID': newNotifID,
+                  'shouldSpeak': ret[i]['shouldSpeak'],
+                  'message': ret[i]['message'],
+                  'repeat': ret[i]['repeat'],
+                  'minutes': ret[i]['minutes']
+                };
+                storage.save({
+                  key: 'reminders',
+                  data: ret,
+                  expires: null,
+                });
+              }
+              storage.load({
+                key: 'pastReminders',
+              })
+                .then(ret => {
+                  ret.unshift(temp);
+                  storage.save({
+                    key: 'pastReminders',
+                    data: ret,
+                    expires: null,
+                  });
+                })
+                .catch(err => {
+                  console.log(err);
+                })
+              setTitle(' ');
+              setTitle('Home');
+            }, 1001);
+          }
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
+  const schedulePushNotification = async (title, date) => {
+    const id = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: title,
+      },
+      trigger: date,
+    });
+    return id;
+  };
+
   const HomeScreen = () => {
     return (
       <Tab.Navigator
@@ -88,137 +193,36 @@ const App = () => {
 
 
   return (
-    <>
-      <NavigationContainer>
-        <SafeAreaProvider>
-          <Stack.Navigator
-            initialRouteName={'Home'}
-          >
-            <Stack.Screen
-              name='Home'
-              component={HomeScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name='CreateNewReminder'
-              component={CreateNewReminder}
-              options={{ title: 'Create New Reminder' }}
-            />
-            <Stack.Screen
-              name='ViewReminder'
-              component={ViewReminder}
-              options={{ title: 'View Reminder' }}
-            />
-            <Stack.Screen
-              name='ViewPastReminder'
-              component={ViewPastReminder}
-              options={{ title: 'View Past Reminder' }}
-            />
-          </Stack.Navigator>
-        </SafeAreaProvider>
-      </NavigationContainer>
-    </>
+    <NavigationContainer>
+      <SafeAreaProvider>
+        <Stack.Navigator
+          initialRouteName={title}
+        >
+          <Stack.Screen
+            name='Home'
+            component={HomeScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name='CreateNewReminder'
+            component={CreateNewReminder}
+            options={{ title: 'Create New Reminder' }}
+          />
+          <Stack.Screen
+            name='ViewReminder'
+            component={ViewReminder}
+            options={{ title: 'View Reminder' }}
+          />
+          <Stack.Screen
+            name='ViewPastReminder'
+            component={ViewPastReminder}
+            options={{ title: 'View Past Reminder' }}
+          />
+        </Stack.Navigator>
+      </SafeAreaProvider>
+    </NavigationContainer>
   );
 
 };
 
 export default App;
-
-
-const askPermissions = async () => {
-  const { status: existingStatus } = await Notifications.requestPermissionsAsync();
-  let finalStatus = existingStatus;
-  if (existingStatus !== 'granted') {
-    const { status } = await Notifications.requestPermissionsAsync();
-    finalStatus = status;
-  }
-  if (finalStatus !== 'granted') {
-    return false;
-  }
-  return true;
-};
-
-const onNotification = (notifID) => {
-  storage.load({
-    key: 'reminders',
-  })
-    .then(ret => {
-      for (let i = 0; i < ret.length; i++) {
-        if (notifID.includes(ret[i]['notifID'])) {
-          if (ret[i]['shouldSpeak']) {
-            setTimeout(() => Speech.speak(ret[i]['message']), 1000);
-          }
-          setTimeout(async () => {
-            let temp = ret[i];
-            let repeat = ret[i]['repeat'];
-            if (repeat === 'Never') {
-              ret.splice(i, 1);
-              storage.save({
-                key: 'reminders',
-                data: ret,
-                expires: null,
-              });
-            } else {
-              let oldDate = new Date(ret[i]['date']);
-              let newDate;
-              if (repeat === 'By the Minute') {
-                newDate = new Date(new Date(oldDate).getTime() + ret[i]['minutes'] * 60 * 1000);
-              } else if (repeat === 'Hourly') {
-                newDate = new Date(new Date(oldDate).getTime() + 60 * 60 * 1000);
-              } else if (repeat === 'Daily') {
-                newDate = new Date(new Date(oldDate).getTime() + 24 * 60 * 60 * 1000);
-              } else if (repeat === 'Weekly') {
-                newDate = new Date(new Date(oldDate).getTime() + 7 * 24 * 60 * 60 * 1000);
-              } else if (repeat === 'Monthly') {
-                newDate = new Date(new Date(oldDate).setMonth(oldDate.getMonth() + 1));
-              } else {
-                newDate = new Date(new Date(oldDate).setFullYear(oldDate.getFullYear() + 1));
-              }
-              let newNotifID = await schedulePushNotification(ret[i]['title'], newDate);
-              ret[i] = {
-                'title': ret[i]['title'],
-                'date': newDate,
-                'notifID': newNotifID,
-                'shouldSpeak': ret[i]['shouldSpeak'],
-                'message': ret[i]['message'],
-                'repeat': ret[i]['repeat'],
-                'minutes': ret[i]['minutes']
-              };
-              storage.save({
-                key: 'reminders',
-                data: ret,
-                expires: null,
-              });
-            }
-            storage.load({
-              key: 'pastReminders',
-            })
-              .then(ret => {
-                ret.unshift(temp);
-                storage.save({
-                  key: 'pastReminders',
-                  data: ret,
-                  expires: null,
-                });
-              })
-              .catch(err => {
-                console.log(err);
-              })
-          }, 1001);
-        }
-      }
-    })
-    .catch(err => {
-      console.log(err);
-    })
-}
-
-const schedulePushNotification = async (title, date) => {
-  const id = await Notifications.scheduleNotificationAsync({
-    content: {
-      title: title,
-    },
-    trigger: date,
-  });
-  return id;
-};
