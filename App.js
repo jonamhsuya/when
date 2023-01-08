@@ -61,6 +61,20 @@ const App = () => {
         onNotification(notifID);
       }
     });
+
+    Notifications.setNotificationCategoryAsync(
+      identifier = 'notification',
+      actions = [
+         {
+          identifier: 'snooze',
+          buttonTitle: 'Snooze ⏰'
+        },
+        {
+          identifier: 'complete',
+          buttonTitle: 'Mark Complete ✅'
+        }
+      ],
+    )
   });
 
 

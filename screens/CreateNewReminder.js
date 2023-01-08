@@ -20,7 +20,8 @@ const CreateNewReminder = ({ navigation }) => {
     const [minutes, setMinutes] = useState(0);
 
     const frequencies = ['Never', 'By the Minute', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Yearly'];
-
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
     const addAndReturn = async () => {
         if (title === '') {
             alert('Please enter a title.')
@@ -66,11 +67,34 @@ const CreateNewReminder = ({ navigation }) => {
         const id = await Notifications.scheduleNotificationAsync({
             content: {
                 title: title,
+                body: formatDate(),
+                sound: 'default',
+                categoryIdentifier: 'notification',
             },
             trigger: date,
         });
         return id;
     };
+
+    const formatDate = () => {
+        let now = new Date(Date.now());
+        let formattedDate = months[date.getMonth()] + ' ' + date.getDate()
+        if (now.getFullYear() !== date.getFullYear()) {
+            formattedDate += ', ' + date.getFullYear();
+        }
+        else if (now.getMonth() === date.getMonth()) {
+            if (now.getDate() === date.getDate()) {
+                formattedDate = 'Today';
+            } else if (now.getDate() === date.getDate() - 1) {
+                formattedDate = 'Tomorrow';
+            }
+        }
+        let AMPM = time.getHours() < 12 ? 'AM' : 'PM';
+        let hours = time.getHours() % 12 === 0 ? '12' : String(time.getHours() % 12);
+        let minutes = time.getMinutes() < 10 ? '0' + String(time.getMinutes()) : String(time.getMinutes());
+        formattedDate += ', ' + hours + ':' + minutes + ' ' + AMPM;
+        return formattedDate;
+    }
 
     const onChangeDate = (event, selectedDate) => {
         setDate(selectedDate);
