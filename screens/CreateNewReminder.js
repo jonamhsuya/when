@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Switch, ScrollView, Dimensions } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Switch, ScrollView, Dimensions, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -24,16 +24,16 @@ const CreateNewReminder = ({ navigation }) => {
 
     const addAndReturn = async () => {
         if (title === '') {
-            alert('Please enter a title.')
+            Alert.alert('Please enter a title.')
         }
         else if (date < new Date(Date.now())) {
-            alert('Please choose a date in the future.');
+            Alert.alert('Please choose a date in the future.');
         }
         else if (shouldSpeak && message === '') {
-            alert('Please enter a message.')
+            Alert.alert('Please enter a message.')
         }
         else if (repeat === '') {
-            alert('Please select a repeat frequency.')
+            Alert.alert('Please select a repeat frequency.')
         }
         else {
             const notifID = await schedulePushNotification();

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -20,17 +21,17 @@ const Tab = createBottomTabNavigator();
 
 const App = () => {
 
-  const [title, setTitle] = useState('Home');
+  const [count, setCount] = useState(0);
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   useEffect(() => {
     storage.load({
       key: 'firstTime',
     })
-      .then(ret => {
+      .then(() => {
         // reminders has already been initialized, do nothing
       })
-      .catch(err => {
+      .catch(() => {
         // user is accessing app for the first time
         askPermissions();
         // save empty array in storage to store future reminders and past reminders
@@ -110,8 +111,7 @@ const App = () => {
               data: ret,
               expires: null,
             });
-            setTitle(' ');
-            setTitle('Home');
+            setCount((c) => c + 1);
           })
           .catch(err => {
             console.log(err);
@@ -135,8 +135,7 @@ const App = () => {
                   data: ret,
                   expires: null,
                 });
-                setTitle(' ');
-                setTitle('Home');
+                setCount((c) => c + 1);
               } else {
                 let oldDate = new Date(ret[i]['date']);
                 let newDate;
@@ -183,8 +182,7 @@ const App = () => {
                 .catch(err => {
                   console.log(err);
                 })
-              setTitle(' ');
-              setTitle('Home');
+              setCount((c) => c + 1);
             }, 1001);
           })
           .catch(err => {
@@ -204,10 +202,19 @@ const App = () => {
       finalStatus = status;
     }
     if (finalStatus !== 'granted') {
-      return false;
+      Alert.alert(
+        'Are you sure you don\'t want notifications? Reminders+ uses notifications to remind you when you have an upcoming task.',
+        '',
+        [
+          { text: 'Yes, I\'m sure' },
+          { text: 'No, I want notifications', style: 'cancel', onPress: () => {
+            Alert.alert('You can change notification preferences in Settings.');
+          }}
+        ]
+      )
     }
     return true;
-  };
+  }
 
   const onNotification = (notifID) => {
     storage.load({
@@ -221,8 +228,7 @@ const App = () => {
         if (ret[i]['shouldSpeak']) {
           setTimeout(() => {
             Speech.speak(ret[i]['message']);
-            setTitle(' ');
-            setTitle('Home');
+            setCount((c) => c + 1);
           }, 1000);
         }
       })
@@ -294,7 +300,7 @@ const App = () => {
     <NavigationContainer>
       <SafeAreaProvider>
         <Stack.Navigator
-          initialRouteName={title}
+          initialRouteName='Home'
         >
           <Stack.Screen
             name='Home'

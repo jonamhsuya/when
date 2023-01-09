@@ -103,8 +103,8 @@ const PastReminders = ({ navigation }) => {
                     style={styles.longButton}
                     onPress={() => {
                         Alert.alert(
-                            'Alert',
                             'Are you sure you want to clear all past reminders?',
+                            '',
                             [
                                 { text: 'Cancel', style: 'cancel' },
                                 { text: 'OK', onPress: deleteAll }

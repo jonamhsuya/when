@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Switch, ScrollView, Dimensions } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Switch, ScrollView, Dimensions, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -27,13 +27,13 @@ const ViewReminder = ({ route, navigation }) => {
 
     const saveAndReturn = async () => {
         if (title === '') {
-            alert('Please enter a title.')
+            Alert.alert('Please enter a title.')
         }
         else if (date < new Date(Date.now())) {
-            alert('Please choose a date in the future.');
+            Alert.alert('Please choose a date in the future.');
         }
         else if (shouldSpeak && message === '') {
-            alert('Please enter a message.')
+            Alert.alert('Please enter a message.')
         }
         else {
             await cancelNotification(notifID);
