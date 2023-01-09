@@ -21,7 +21,7 @@ const CreateNewReminder = ({ navigation }) => {
 
     const frequencies = ['Never', 'By the Minute', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Yearly'];
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    
+
     const addAndReturn = async () => {
         if (title === '') {
             alert('Please enter a title.')
@@ -74,7 +74,7 @@ const CreateNewReminder = ({ navigation }) => {
             trigger: date,
         });
         return id;
-    };
+    }
 
     const formatDate = () => {
         let now = new Date(Date.now());
@@ -89,9 +89,9 @@ const CreateNewReminder = ({ navigation }) => {
                 formattedDate = 'Tomorrow';
             }
         }
-        let AMPM = time.getHours() < 12 ? 'AM' : 'PM';
-        let hours = time.getHours() % 12 === 0 ? '12' : String(time.getHours() % 12);
-        let minutes = time.getMinutes() < 10 ? '0' + String(time.getMinutes()) : String(time.getMinutes());
+        let AMPM = date.getHours() < 12 ? 'AM' : 'PM';
+        let hours = date.getHours() % 12 === 0 ? '12' : String(date.getHours() % 12);
+        let minutes = date.getMinutes() < 10 ? '0' + String(date.getMinutes()) : String(date.getMinutes());
         formattedDate += ', ' + hours + ':' + minutes + ' ' + AMPM;
         return formattedDate;
     }

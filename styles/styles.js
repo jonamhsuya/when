@@ -75,6 +75,21 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 
+  overdueReminder: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    alignSelf: 'center',
+    borderWidth: 1,
+    padding: 10,
+    margin: 5,
+    width: Dimensions.get('window').width - 40,
+    height: 60,
+    shadowOffset: { width: 0, height: 0 },
+    backgroundColor: 'lightpink',
+  },
+
   textInput: {
     borderColor: 'black',
     borderWidth: 1,

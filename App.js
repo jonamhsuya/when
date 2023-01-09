@@ -21,6 +21,7 @@ const Tab = createBottomTabNavigator();
 const App = () => {
 
   const [title, setTitle] = useState('Home');
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   useEffect(() => {
     storage.load({
@@ -65,7 +66,7 @@ const App = () => {
     Notifications.setNotificationCategoryAsync(
       identifier = 'notification',
       actions = [
-         {
+        {
           identifier: 'snooze',
           buttonTitle: 'Snooze ⏰'
         },
@@ -75,31 +76,54 @@ const App = () => {
         }
       ],
     )
-  });
 
-
-  const askPermissions = async () => {
-    const { status: existingStatus } = await Notifications.requestPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    if (finalStatus !== 'granted') {
-      return false;
-    }
-    return true;
-  };
-
-  const onNotification = (notifID) => {
-    storage.load({
-      key: 'reminders',
-    })
-      .then(ret => {
-        for (let i = 0; i < ret.length; i++) {
-          if (notifID.includes(ret[i]['notifID'])) {
-            if (ret[i]['shouldSpeak']) {
-              setTimeout(() => Speech.speak(ret[i]['message']), 1000);
+    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+      if (response.actionIdentifier === 'snooze') {
+        const title = response.notification.request.content.title;
+        const newDate = Date.now() + 5 * 60 * 1000;
+        storage.load({
+          key: 'reminders',
+        })
+          .then(async ret => {
+            let i = 0;
+            while (!response.notification.request.identifier.includes(ret[i]['notifID'])) {
+              i++;
+            }
+            const oldDate = new Date(ret[i]['date']);
+            const newNotifID = await schedulePushNotification(
+              title,
+              new Date(newDate),
+              true,
+              Math.round((newDate - oldDate.getTime()) / (60 * 1000))
+            );
+            ret[i] = {
+              'title': ret[i]['title'],
+              'date': ret[i]['date'],
+              'notifID': newNotifID,
+              'shouldSpeak': ret[i]['shouldSpeak'],
+              'message': ret[i]['message'],
+              'repeat': ret[i]['repeat'],
+              'minutes': ret[i]['minutes']
+            };
+            storage.save({
+              key: 'reminders',
+              data: ret,
+              expires: null,
+            });
+            setTitle(' ');
+            setTitle('Home');
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else if (response.actionIdentifier === 'complete') {
+        storage.load({
+          key: 'reminders',
+        })
+          .then(ret => {
+            let i = 0;
+            while (!response.notification.request.identifier.includes(ret[i]['notifID'])) {
+              i++;
             }
             setTimeout(async () => {
               let temp = ret[i];
@@ -162,7 +186,44 @@ const App = () => {
               setTitle(' ');
               setTitle('Home');
             }, 1001);
-          }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    })
+    return () => subscription.remove();
+  });
+
+
+  const askPermissions = async () => {
+    const { status: existingStatus } = await Notifications.requestPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      return false;
+    }
+    return true;
+  };
+
+  const onNotification = (notifID) => {
+    storage.load({
+      key: 'reminders',
+    })
+      .then(ret => {
+        let i = 0;
+        while (!notifID.includes(ret[i]['notifID'])) {
+          i++;
+        }
+        if (ret[i]['shouldSpeak']) {
+          setTimeout(() => {
+            Speech.speak(ret[i]['message']);
+            setTitle(' ');
+            setTitle('Home');
+          }, 1000);
         }
       })
       .catch(err => {
@@ -170,15 +231,38 @@ const App = () => {
       })
   }
 
-  const schedulePushNotification = async (title, date) => {
+  const schedulePushNotification = async (title, date, snooze = false, timeSinceReminder = 0) => {
     const id = await Notifications.scheduleNotificationAsync({
       content: {
         title: title,
+        body: snooze ? timeSinceReminder + ' minutes ago' : formatDate(date),
+        sound: 'default',
+        categoryIdentifier: 'notification',
       },
       trigger: date,
     });
     return id;
   };
+
+  const formatDate = (date) => {
+    let now = new Date(Date.now());
+    let formattedDate = months[date.getMonth()] + ' ' + date.getDate()
+    if (now.getFullYear() !== date.getFullYear()) {
+      formattedDate += ', ' + date.getFullYear();
+    }
+    else if (now.getMonth() === date.getMonth()) {
+      if (now.getDate() === date.getDate()) {
+        formattedDate = 'Today';
+      } else if (now.getDate() === date.getDate() - 1) {
+        formattedDate = 'Tomorrow';
+      }
+    }
+    let AMPM = date.getHours() < 12 ? 'AM' : 'PM';
+    let hours = date.getHours() % 12 === 0 ? '12' : String(date.getHours() % 12);
+    let minutes = date.getMinutes() < 10 ? '0' + String(date.getMinutes()) : String(date.getMinutes());
+    formattedDate += ', ' + hours + ':' + minutes + ' ' + AMPM;
+    return formattedDate;
+  }
 
   const HomeScreen = () => {
     return (

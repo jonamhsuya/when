@@ -69,54 +69,52 @@ const PastReminders = ({ navigation }) => {
             });
     });
 
-    const pastReminders = data.map((item, index) => {
-        return (
-            <View key={index} style={styles.reminder}>
-                <View>
-                    <Text style={styles.reminderText}>{item['title']}</Text>
-                    <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}</Text>
-                </View>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('ViewPastReminder', {
-                        key: index,
-                        title: item['title'],
-                        shouldSpeak: item['shouldSpeak'],
-                        message: item['message'],
-                        repeat: item['repeat'],
-                        minutes: item['minutes']
-                    })}
-                >
-                    <MaterialCommunityIcons name={'lead-pencil'} size={25} />
-                </TouchableOpacity>
-            </View>
-        )
-    });
-
     const noPastReminders = <Text style={styles.noReminders}>No past reminders.</Text>
 
     return (
         <SafeAreaView>
-            {pastReminders.length === 0 ? noPastReminders :
+            {data.length === 0 ? noPastReminders :
                 <ScrollView style={styles.reminderView} scrollEnabled={data.length * 65 > Dimensions.get('window').height - 400}>
-                    {pastReminders}
+                    {data.map((item, index) => {
+                        return (
+                            <View key={index} style={styles.reminder}>
+                                <View>
+                                    <Text style={styles.reminderText}>{item['title']}</Text>
+                                    <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}</Text>
+                                </View>
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('ViewPastReminder', {
+                                        key: index,
+                                        title: item['title'],
+                                        shouldSpeak: item['shouldSpeak'],
+                                        message: item['message'],
+                                        repeat: item['repeat'],
+                                        minutes: item['minutes']
+                                    })}
+                                >
+                                    <MaterialCommunityIcons name={'lead-pencil'} size={25} />
+                                </TouchableOpacity>
+                            </View>
+                        )
+                    })}
                 </ScrollView>}
-            {pastReminders.length > 0 &&
-            <TouchableOpacity
-                style={styles.longButton}
-                onPress={() => {
-                    Alert.alert(
-                        'Alert',
-                        'Are you sure you want to clear all past reminders?',
-                        [
-                          { text: 'Cancel', style: 'cancel' },
-                          { text: 'OK', onPress: deleteAll }
-                        ]
-                    )
-                }}
-            >
-                <MaterialCommunityIcons name={'trash-can-outline'} size={40} style={{ alignSelf: 'center' }} color='black' />
-                {/* <Text style={{ fontSize: 36, textAlign: 'center' }}>+</Text> */}
-            </TouchableOpacity>}
+            {data.length > 0 &&
+                <TouchableOpacity
+                    style={styles.longButton}
+                    onPress={() => {
+                        Alert.alert(
+                            'Alert',
+                            'Are you sure you want to clear all past reminders?',
+                            [
+                                { text: 'Cancel', style: 'cancel' },
+                                { text: 'OK', onPress: deleteAll }
+                            ]
+                        )
+                    }}
+                >
+                    <MaterialCommunityIcons name={'trash-can-outline'} size={40} style={{ alignSelf: 'center' }} color='black' />
+                    {/* <Text style={{ fontSize: 36, textAlign: 'center' }}>+</Text> */}
+                </TouchableOpacity>}
         </SafeAreaView>
     );
 

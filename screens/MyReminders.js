@@ -69,7 +69,7 @@ const MyReminders = ({ navigation }) => {
             {data.length === 0 ? noReminders :
                 <ScrollView style={styles.reminderView} scrollEnabled={data.length * 65 > Dimensions.get('window').height - 400}>
                     {data.map((item, index) => (
-                        <View key={index} style={styles.reminder}>
+                        <View key={index} style={new Date(item['date']) > new Date(Date.now()) ? styles.reminder : styles.overdueReminder}>
                             <View>
                                 <Text style={styles.reminderText}>{item['title']}</Text>
                                 <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}{formatRepeat(item['repeat'], item['minutes'])}</Text>
