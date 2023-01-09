@@ -23,6 +23,7 @@ const ViewReminder = ({ route, navigation }) => {
     const [minutes, setMinutes] = useState(route.params['minutes']);
 
     const frequencies = ['Never', 'By the Minute', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Yearly'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     const saveAndReturn = async () => {
         if (title === '') {
