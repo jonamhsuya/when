@@ -13,11 +13,11 @@ PODS:
     - ExpoModulesCore
   - EXNotifications (0.17.0):
     - ExpoModulesCore
-  - Expo (47.0.9):
+  - Expo (47.0.12):
     - ExpoModulesCore
   - ExpoKeepAwake (11.0.1):
     - ExpoModulesCore
-  - ExpoModulesCore (1.0.4):
+  - ExpoModulesCore (1.1.1):
     - React-Core
     - ReactCommon/turbomodule/core
   - EXSpeech (11.0.0):
@@ -489,9 +489,9 @@ SPEC CHECKSUMS:
   EXFileSystem: 60602b6eefa6873f97172c684b7537c9760b50d6
   EXFont: 319606bfe48c33b5b5063fb0994afdc496befe80
   EXNotifications: babce2a87b7922051354fcfe7a74dd279b7e272a
-  Expo: 5523a4835730104a301caeac1e68dad095a9dfff
+  Expo: f48d305fda3e4e501d686e6bad7d8c8373828279
   ExpoKeepAwake: 69b59d0a8d2b24de9f82759c39b3821fec030318
-  ExpoModulesCore: 8211c89bcc3ba86e2d02c54b1d31f1fa81acb6de
+  ExpoModulesCore: 485dff3a59b036a33b6050c0a5aea3cf1037fdd1
   EXSpeech: b1e02f7d9d4e9731133da25ee4b26cc0740707ed
   EXSplashScreen: 3e989924f61a8dd07ee4ea584c6ba14be9b51949
   FBLazyVector: affa4ba1bfdaac110a789192f4d452b053a86624

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Text, TouchableOpacity, View, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -50,17 +50,20 @@ const MyReminders = ({ navigation }) => {
         }
     }
 
-    useFocusEffect(() => {
-        storage.load({
-            key: 'reminders',
-        })
-            .then(ret => {
-                setData(ret);
+    useFocusEffect(
+        React.useCallback(() => {
+            storage.load({
+                key: 'reminders',
             })
-            .catch(err => {
-                console.warn(err.message);
-            });
-    });
+                .then(ret => {
+                    setData(ret);
+                })
+                .catch(err => {
+                    console.warn(err.message);
+                });
+        }, [data])
+    )
+
 
     const noReminders = <Text style={styles.noReminders}>No reminders. Create a new one!</Text>
 

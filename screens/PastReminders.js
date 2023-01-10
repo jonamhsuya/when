@@ -53,7 +53,7 @@ const PastReminders = ({ navigation }) => {
                 setData([]);
             })
             .catch(err => {
-                console.warn(err.message);
+                console.log(err.message);
             });
     }
 
@@ -65,7 +65,7 @@ const PastReminders = ({ navigation }) => {
                 setData(ret);
             })
             .catch(err => {
-                console.warn(err.message);
+                console.log(err.message);
             });
     });
 
