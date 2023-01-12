@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Text, TouchableOpacity, View, ScrollView, Dimensions, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -57,17 +57,19 @@ const PastReminders = ({ navigation }) => {
             });
     }
 
-    useFocusEffect(() => {
-        storage.load({
-            key: 'pastReminders',
-        })
-            .then(ret => {
-                setData(ret);
+    useFocusEffect(
+        React.useCallback(() => {
+            storage.load({
+                key: 'pastReminders',
             })
-            .catch(err => {
-                console.log(err.message);
-            });
-    });
+                .then(ret => {
+                    setData(ret);
+                })
+                .catch(err => {
+                    console.log(err.message);
+                });
+        }, [data])
+    )
 
     const noPastReminders = <Text style={styles.noReminders}>No past reminders.</Text>
 
@@ -86,8 +88,8 @@ const PastReminders = ({ navigation }) => {
                                     onPress={() => navigation.navigate('ViewPastReminder', {
                                         key: index,
                                         title: item['title'],
-                                        shouldSpeak: item['shouldSpeak'],
-                                        message: item['message'],
+                                        // shouldSpeak: item['shouldSpeak'],
+                                        // message: item['message'],
                                         repeat: item['repeat'],
                                         minutes: item['minutes']
                                     })}

@@ -3,11 +3,11 @@ import { View, Text, TextInput, TouchableOpacity, Switch, ScrollView, Dimensions
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import SelectDropdown from 'react-native-select-dropdown';
-import * as Notifications from 'expo-notifications';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import styles from '../styles/styles';
 import storage from '../storage/storage';
+import { createTriggerNotification } from '../functions/createTriggerNotification';
 
 
 const ViewPastReminder = ({ route, navigation }) => {
@@ -16,8 +16,8 @@ const ViewPastReminder = ({ route, navigation }) => {
     const [title, setTitle] = useState(route.params['title']);
     const [date, setDate] = useState(new Date(Date.now()));
     const [time, setTime] = useState(new Date(Date.now()));
-    const [shouldSpeak, setShouldSpeak] = useState(route.params['shouldSpeak']);
-    const [message, setMessage] = useState(route.params['message']);
+    // const [shouldSpeak, setShouldSpeak] = useState(route.params['shouldSpeak']);
+    // const [message, setMessage] = useState(route.params['message']);
     const [repeat, setRepeat] = useState(route.params['repeat']);
     const [minutes, setMinutes] = useState(route.params['minutes']);
 
@@ -31,11 +31,11 @@ const ViewPastReminder = ({ route, navigation }) => {
         else if (date < new Date(Date.now())) {
             Alert.alert('Please choose a date in the future.');
         }
-        else if (shouldSpeak && message === '') {
-            Alert.alert('Please enter a message.');
-        }
+        // else if (shouldSpeak && message === '') {
+        //     Alert.alert('Please enter a message.');
+        // }
         else {
-            const notifID = await schedulePushNotification();
+            const notifID = await createTriggerNotification(date, title);
 
             storage.load({
                 key: 'pastReminders',
@@ -59,8 +59,8 @@ const ViewPastReminder = ({ route, navigation }) => {
                         'title': title,
                         'date': date,
                         'notifID': notifID,
-                        'shouldSpeak': shouldSpeak,
-                        'message': message,
+                        // 'shouldSpeak': shouldSpeak,
+                        // 'message': message,
                         'repeat': repeat,
                         'minutes': minutes
                     });
@@ -74,39 +74,6 @@ const ViewPastReminder = ({ route, navigation }) => {
                 });
             navigation.navigate('Home', { screen: 'My Reminders' });
         }
-    }
-
-    const schedulePushNotification = async () => {
-        const id = await Notifications.scheduleNotificationAsync({
-            content: {
-                title: title,
-                body: formatDate(),
-                sound: 'default',
-                categoryIdentifier: 'notification',
-            },
-            trigger: date,
-        });
-        return id;
-    }
-
-    const formatDate = () => {
-        let now = new Date(Date.now());
-        let formattedDate = months[date.getMonth()] + ' ' + date.getDate()
-        if (now.getFullYear() !== date.getFullYear()) {
-            formattedDate += ', ' + date.getFullYear();
-        }
-        else if (now.getMonth() === date.getMonth()) {
-            if (now.getDate() === date.getDate()) {
-                formattedDate = 'Today';
-            } else if (now.getDate() === date.getDate() - 1) {
-                formattedDate = 'Tomorrow';
-            }
-        }
-        let AMPM = date.getHours() < 12 ? 'AM' : 'PM';
-        let hours = date.getHours() % 12 === 0 ? '12' : String(date.getHours() % 12);
-        let minutes = date.getMinutes() < 10 ? '0' + String(date.getMinutes()) : String(date.getMinutes());
-        formattedDate += ', ' + hours + ':' + minutes + ' ' + AMPM;
-        return formattedDate;
     }
 
     const deleteAndReturn = () => {
@@ -136,9 +103,9 @@ const ViewPastReminder = ({ route, navigation }) => {
         date.setHours(time.getHours(), time.getMinutes(), 0);
     };
 
-    const onChangeShouldSpeak = () => {
-        setShouldSpeak(previousState => !previousState);
-    };
+    // const onChangeShouldSpeak = () => {
+    //     setShouldSpeak(previousState => !previousState);
+    // };
 
 
     return (
@@ -220,7 +187,7 @@ const ViewPastReminder = ({ route, navigation }) => {
                         <Text style={styles.smallText}>minutes</Text>
                     </View>
                 }
-                <View style={styles.createReminderGroup}>
+                {/* <View style={styles.createReminderGroup}>
                     <View style={styles.box}>
                         <Text style={styles.text}>Speech</Text>
                     </View>
@@ -239,21 +206,19 @@ const ViewPastReminder = ({ route, navigation }) => {
                         value={message}
                         onChangeText={(m) => setMessage(m)}
                         style={styles.smallTextInput}
-                    />}
+                    />} */}
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity
                         style={styles.shortButton}
                         onPress={addAndReturn}
                     >
                         <MaterialCommunityIcons name={'plus'} size={40} style={{ alignSelf: 'center' }} color='black' />
-                        {/* <Text style={{ fontSize: 24, textAlign: 'center' }}>Reschedule</Text> */}
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.shortButton}
                         onPress={deleteAndReturn}
                     >
                         <MaterialCommunityIcons name={'trash-can-outline'} size={40} style={{ alignSelf: 'center' }} color='black' />
-                        {/* <Text style={{ fontSize: 24, textAlign: 'center', color: 'red' }}>Delete</Text> */}
                     </TouchableOpacity>
                 </View>
             </ScrollView>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Text, TouchableOpacity, View, ScrollView, Dimensions } from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -10,6 +11,7 @@ import storage from '../storage/storage';
 const MyReminders = ({ navigation }) => {
 
     const [data, setData] = useState([]);
+    const [done, setDone] = useState(false);
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -59,7 +61,7 @@ const MyReminders = ({ navigation }) => {
                     setData(ret);
                 })
                 .catch(err => {
-                    console.warn(err.message);
+                    console.log(err.message);
                 });
         }, [data])
     )
@@ -73,6 +75,16 @@ const MyReminders = ({ navigation }) => {
                 <ScrollView style={styles.reminderView} scrollEnabled={data.length * 65 > Dimensions.get('window').height - 400}>
                     {data.map((item, index) => (
                         <View key={index} style={new Date(item['date']) > new Date(Date.now()) ? styles.reminder : styles.overdueReminder}>
+                            <CheckBox
+                                value={done}
+                                // onValueChange={setDone((previousState) => !previousState)}
+                                boxType='square'
+                                onCheckColor='green'
+                                onTintColor='green'
+                                onAnimationType='fill'
+                                offAnimationType='fill'
+                                animationDuration={0.35}
+                            />
                             <View>
                                 <Text style={styles.reminderText}>{item['title']}</Text>
                                 <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}{formatRepeat(item['repeat'], item['minutes'])}</Text>
@@ -83,8 +95,8 @@ const MyReminders = ({ navigation }) => {
                                     title: item['title'],
                                     date: item['date'],
                                     notifID: item['notifID'],
-                                    shouldSpeak: item['shouldSpeak'],
-                                    message: item['message'],
+                                    // shouldSpeak: item['shouldSpeak'],
+                                    // message: item['message'],
                                     repeat: item['repeat'],
                                     minutes: item['minutes']
                                 })}
@@ -99,7 +111,6 @@ const MyReminders = ({ navigation }) => {
                 onPress={() => { navigation.navigate('CreateNewReminder') }}
             >
                 <MaterialCommunityIcons name={'playlist-plus'} size={40} style={{ alignSelf: 'center' }} color='black' />
-                {/* <Text style={{ fontSize: 36, textAlign: 'center' }}>+</Text> */}
             </TouchableOpacity>
         </SafeAreaView>
     );

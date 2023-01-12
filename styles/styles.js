@@ -50,6 +50,21 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
   },
 
+  audioButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    margin: 15,
+    padding: 10,
+    width: 125,
+    borderRadius: 10,
+    shadowOpacity: 1.0,
+    shadowRadius: 2.5,
+    shadowOffset: { width: 0, height: 0 },
+  },
+
   reminder: {
     display: 'flex',
     flexDirection: 'row',
@@ -151,7 +166,7 @@ const styles = StyleSheet.create({
     width: 100,
     backgroundColor: 'black',
     borderWidth: 1,
-    borderRadius: 7.5
+    borderRadius: 7.5,
   },
 
   boxText: {
