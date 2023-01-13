@@ -8,10 +8,10 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 // import * as Speech from 'expo-speech';
 
 import MyReminders from './screens/MyReminders';
-import PastReminders from './screens/PastReminders';
+import CompletedTasks from './screens/CompletedTasks';
 import CreateNewReminder from './screens/CreateNewReminder';
 import ViewReminder from './screens/ViewReminder';
-import ViewPastReminder from './screens/ViewPastReminder';
+import ViewCompletedTask from './screens/ViewCompletedTask';
 
 import storage from './storage/storage';
 import { formatDate } from './functions/formatDate';
@@ -32,14 +32,14 @@ const App = () => {
     .catch(() => {
       // user is accessing app for the first time
       setCategories();
-      // save empty array in storage to store future reminders and past reminders
+      // save empty array in storage to store future reminders and completed tasks
       storage.save({
         key: 'reminders',
         data: [],
         expires: null,
       });
       storage.save({
-        key: 'pastReminders',
+        key: 'completedTasks',
         data: [],
         expires: null,
       });
@@ -102,12 +102,12 @@ const App = () => {
           let temp = ret[i];
           ret.splice(i, 1);
           storage.load({
-            key: 'pastReminders',
+            key: 'completedTasks',
           })
             .then(ret => {
               ret.unshift(temp);
               storage.save({
-                key: 'pastReminders',
+                key: 'completedTasks',
                 data: ret,
                 expires: null,
               });
@@ -137,8 +137,8 @@ const App = () => {
 
             if (route.name === 'My Reminders') {
               iconName = 'format-list-checkbox'
-            } else if (route.name === 'Past Reminders') {
-              iconName = 'archive-clock'
+            } else if (route.name === 'Completed Tasks') {
+              iconName = 'check-bold'
             }
 
             return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
@@ -148,7 +148,7 @@ const App = () => {
         })}
       >
         <Tab.Screen name='My Reminders' component={MyReminders} />
-        <Tab.Screen name='Past Reminders' component={PastReminders} />
+        <Tab.Screen name='Completed Tasks' component={CompletedTasks} />
       </Tab.Navigator>
     );
   }
@@ -175,9 +175,9 @@ const App = () => {
             options={{ title: 'View Reminder' }}
           />
           <Stack.Screen
-            name='ViewPastReminder'
-            component={ViewPastReminder}
-            options={{ title: 'View Past Reminder' }}
+            name='ViewCompletedTask'
+            component={ViewCompletedTask}
+            options={{ title: 'View Completed Task' }}
           />
         </Stack.Navigator>
       </SafeAreaProvider>

@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
   reminder: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     alignSelf: 'center',
     borderWidth: 1,
@@ -93,7 +92,6 @@ const styles = StyleSheet.create({
   overdueReminder: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     alignSelf: 'center',
     borderWidth: 1,

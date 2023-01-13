@@ -10,7 +10,7 @@ import storage from '../storage/storage';
 import { createTriggerNotification } from '../functions/createTriggerNotification';
 
 
-const ViewPastReminder = ({ route, navigation }) => {
+const ViewCompletedTask = ({ route, navigation }) => {
 
     const [index, setIndex] = useState(route.params['key']);
     const [title, setTitle] = useState(route.params['title']);
@@ -38,12 +38,12 @@ const ViewPastReminder = ({ route, navigation }) => {
             const notifID = await createTriggerNotification(date, title);
 
             storage.load({
-                key: 'pastReminders',
+                key: 'completedTasks',
             })
                 .then(ret => {
                     ret.splice(index, 1);
                     storage.save({
-                        key: 'pastReminders',
+                        key: 'completedTasks',
                         data: ret
                     })
                 })
@@ -78,12 +78,12 @@ const ViewPastReminder = ({ route, navigation }) => {
 
     const deleteAndReturn = () => {
         storage.load({
-            key: 'pastReminders',
+            key: 'completedTasks',
         })
             .then(ret => {
                 ret.splice(index, 1);
                 storage.save({
-                    key: 'pastReminders',
+                    key: 'completedTasks',
                     data: ret
                 })
             })
@@ -227,4 +227,4 @@ const ViewPastReminder = ({ route, navigation }) => {
 
 };
 
-export default ViewPastReminder;
+export default ViewCompletedTask;

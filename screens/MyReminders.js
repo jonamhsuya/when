@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { Text, TouchableOpacity, View, ScrollView, Dimensions } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import styles from '../styles/styles';
 import storage from '../storage/storage';
+import { cancelNotification } from '../functions/cancelNotification';
 
 const MyReminders = ({ navigation }) => {
 
     const [data, setData] = useState([]);
-    const [done, setDone] = useState(false);
+    const [count, setCount] = useState(0);
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -52,20 +52,17 @@ const MyReminders = ({ navigation }) => {
         }
     }
 
-    useFocusEffect(
-        React.useCallback(() => {
-            storage.load({
-                key: 'reminders',
+    useFocusEffect(() => {
+        storage.load({
+            key: 'reminders',
+        })
+            .then(ret => {
+                setData(ret);
             })
-                .then(ret => {
-                    setData(ret);
-                })
-                .catch(err => {
-                    console.log(err.message);
-                });
-        }, [data])
-    )
-
+            .catch(err => {
+                console.log(err.message);
+            })
+    })
 
     const noReminders = <Text style={styles.noReminders}>No reminders. Create a new one!</Text>
 
@@ -75,20 +72,53 @@ const MyReminders = ({ navigation }) => {
                 <ScrollView style={styles.reminderView} scrollEnabled={data.length * 65 > Dimensions.get('window').height - 400}>
                     {data.map((item, index) => (
                         <View key={index} style={new Date(item['date']) > new Date(Date.now()) ? styles.reminder : styles.overdueReminder}>
-                            <CheckBox
-                                value={done}
-                                // onValueChange={setDone((previousState) => !previousState)}
-                                boxType='square'
-                                onCheckColor='green'
-                                onTintColor='green'
-                                onAnimationType='fill'
-                                offAnimationType='fill'
-                                animationDuration={0.35}
-                            />
-                            <View>
+                            <View style={{ width: 255 }}>
                                 <Text style={styles.reminderText}>{item['title']}</Text>
                                 <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}{formatRepeat(item['repeat'], item['minutes'])}</Text>
                             </View>
+                            <TouchableOpacity
+                                style={{ marginRight: 22 }}
+                                onPress={() => {
+                                    storage.load({
+                                        key: 'reminders',
+                                    })
+                                        .then(ret => {
+                                            try {
+                                                cancelNotification(ret[index]['notifID']);
+                                            } catch (err) {
+                                                console.log(err);
+                                            }
+                                            let temp = ret[index];
+                                            ret.splice(index, 1);
+                                            storage.save({
+                                                key: 'reminders',
+                                                data: ret,
+                                                expires: null
+                                            })
+                                            storage.load({
+                                                key: 'completedTasks',
+                                            })
+                                                .then(ret => {
+                                                    ret.unshift(temp);
+                                                    storage.save({
+                                                        key: 'completedTasks',
+                                                        data: ret,
+                                                        expires: null
+                                                    })
+                                                })
+                                                .catch(err => {
+                                                    console.log(err.message);
+                                                });
+                                            setData(ret);
+                                        })
+                                        .catch(err => {
+                                            console.log(err.message);
+                                        });
+                                    setCount((c) => c + 1);
+                                }}
+                            >
+                                <MaterialCommunityIcons name='check-bold' size={25} />
+                            </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => navigation.navigate('ViewReminder', {
                                     key: index,

@@ -14,7 +14,7 @@ const CreateNewReminder = ({ navigation }) => {
     const [title, setTitle] = useState('');
     const [date, setDate] = useState(new Date(Date.now()));
     const [time, setTime] = useState(new Date(Date.now()));
-    const [repeat, setRepeat] = useState('');
+    const [repeat, setRepeat] = useState('Never');
     const [minutes, setMinutes] = useState(0);
 
     const frequencies = ['Never', 'By the Minute', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Yearly'];
@@ -119,6 +119,7 @@ const CreateNewReminder = ({ navigation }) => {
                     </View>
                     <SelectDropdown
                         data={frequencies}
+                        defaultValue={repeat}
                         buttonStyle={{
                             alignSelf: 'flex-end',
                             marginHorizontal: 20,

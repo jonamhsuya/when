@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import styles from '../styles/styles';
 import storage from '../storage/storage';
 
-const PastReminders = ({ navigation }) => {
+const CompletedTasks = ({ navigation }) => {
 
     const [data, setData] = useState([]);
 
@@ -42,11 +42,11 @@ const PastReminders = ({ navigation }) => {
 
     const deleteAll = () => {
         storage.load({
-            key: 'pastReminders',
+            key: 'completedTasks',
         })
             .then(ret => {
                 storage.save({
-                    key: 'pastReminders',
+                    key: 'completedTasks',
                     data: [],
                     expires: null
                 })
@@ -60,7 +60,7 @@ const PastReminders = ({ navigation }) => {
     useFocusEffect(
         React.useCallback(() => {
             storage.load({
-                key: 'pastReminders',
+                key: 'completedTasks',
             })
                 .then(ret => {
                     setData(ret);
@@ -71,11 +71,11 @@ const PastReminders = ({ navigation }) => {
         }, [data])
     )
 
-    const noPastReminders = <Text style={styles.noReminders}>No past reminders.</Text>
+    const noCompletedTasks = <Text style={styles.noReminders}>No completed tasks.</Text>
 
     return (
         <SafeAreaView>
-            {data.length === 0 ? noPastReminders :
+            {data.length === 0 ? noCompletedTasks :
                 <ScrollView style={styles.reminderView} scrollEnabled={data.length * 65 > Dimensions.get('window').height - 400}>
                     {data.map((item, index) => {
                         return (
@@ -85,7 +85,8 @@ const PastReminders = ({ navigation }) => {
                                     <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}</Text>
                                 </View>
                                 <TouchableOpacity
-                                    onPress={() => navigation.navigate('ViewPastReminder', {
+                                    style={{marginLeft: 195}}
+                                    onPress={() => navigation.navigate('ViewCompletedTask', {
                                         key: index,
                                         title: item['title'],
                                         // shouldSpeak: item['shouldSpeak'],
@@ -105,7 +106,7 @@ const PastReminders = ({ navigation }) => {
                     style={styles.longButton}
                     onPress={() => {
                         Alert.alert(
-                            'Are you sure you want to clear all past reminders?',
+                            'Are you sure you want to clear all completed tasks?',
                             '',
                             [
                                 { text: 'Cancel', style: 'cancel' },
@@ -122,4 +123,4 @@ const PastReminders = ({ navigation }) => {
 
 };
 
-export default PastReminders;
+export default CompletedTasks;
