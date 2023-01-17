@@ -18,12 +18,13 @@ const ViewReminder = ({ route, navigation }) => {
     const [date, setDate] = useState(new Date(route.params['date']));
     const [time, setTime] = useState(new Date(route.params['date']));
     const [notifID, setNotifID] = useState(route.params['notifID']);
+    const [notifDate, setNotifDate] = useState(route.params['notifDate']);
     // const [shouldSpeak, setShouldSpeak] = useState(route.params['shouldSpeak']);
     // const [message, setMessage] = useState(route.params['message']);
     const [repeat, setRepeat] = useState(route.params['repeat']);
     const [minutes, setMinutes] = useState(route.params['minutes']);
 
-    const frequencies = ['Never', 'By the Minute', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Yearly'];
+    const frequencies = ['Never', 'Hourly', 'Daily', 'Weekly'];
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     const saveAndReturn = async () => {

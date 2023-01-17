@@ -50,21 +50,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
   },
 
-  audioButton: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignSelf: 'center',
-    backgroundColor: 'white',
-    margin: 15,
-    padding: 10,
-    width: 125,
-    borderRadius: 10,
-    shadowOpacity: 1.0,
-    shadowRadius: 2.5,
-    shadowOffset: { width: 0, height: 0 },
-  },
-
   reminder: {
     display: 'flex',
     flexDirection: 'row',
@@ -87,20 +72,6 @@ const styles = StyleSheet.create({
   reminderDate: {
     fontWeight: 'bold',
     fontSize: 12,
-  },
-
-  overdueReminder: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'center',
-    borderWidth: 1,
-    padding: 10,
-    margin: 5,
-    width: Dimensions.get('window').width - 40,
-    height: 60,
-    shadowOffset: { width: 0, height: 0 },
-    backgroundColor: 'lightpink',
   },
 
   textInput: {

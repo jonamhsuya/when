@@ -17,7 +17,7 @@ const CreateNewReminder = ({ navigation }) => {
     const [repeat, setRepeat] = useState('Never');
     const [minutes, setMinutes] = useState(0);
 
-    const frequencies = ['Never', 'By the Minute', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Yearly'];
+    const frequencies = ['Never', 'Hourly', 'Daily', 'Weekly'];
 
     const addAndReturn = async () => {
         if (title === '') {
@@ -30,7 +30,7 @@ const CreateNewReminder = ({ navigation }) => {
             Alert.alert('Please select a repeat frequency.')
         }
         else {
-            const notifID = await createTriggerNotification(date, title);
+            const notifID = await createTriggerNotification(date, title, repeat);
             storage.load({
                 key: 'reminders',
             })

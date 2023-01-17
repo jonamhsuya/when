@@ -89,15 +89,6 @@ const App = () => {
             Math.round((newDate - oldDate.getTime()) / (60 * 1000))
           );
           ret[i]['notifID'] = newNotifID;
-          // ret[i] = {
-          //   'title': ret[i]['title'],
-          //   'date': ret[i]['date'],
-          //   'notifID': newNotifID,
-          //   'shouldSpeak': ret[i]['shouldSpeak'],
-          //   'message': ret[i]['message'],
-          //   'repeat': ret[i]['repeat'],
-          //   'minutes': ret[i]['minutes']
-          // };
         } else if (pressAction.id === 'done') {
           let temp = ret[i];
           ret.splice(i, 1);
@@ -143,8 +134,8 @@ const App = () => {
 
             return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: 'tomato',
-          tabBarInactiveTintColor: 'gray',
+          tabBarActiveTintColor: '#D32027',
+          tabBarInactiveTintColor: '#AAAAAA',
         })}
       >
         <Tab.Screen name='My Reminders' component={MyReminders} />

@@ -21,7 +21,7 @@ const ViewCompletedTask = ({ route, navigation }) => {
     const [repeat, setRepeat] = useState(route.params['repeat']);
     const [minutes, setMinutes] = useState(route.params['minutes']);
 
-    const frequencies = ['Never', 'By the Minute', 'Hourly', 'Daily', 'Weekly', 'Monthly', 'Yearly'];
+    const frequencies = ['Never', 'Hourly', 'Daily', 'Weekly'];
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     const addAndReturn = async () => {

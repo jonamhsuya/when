@@ -15,10 +15,58 @@ const MyReminders = ({ navigation }) => {
 
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-    const formatDate = (dateString) => {
-        let date = new Date(dateString)
+    const formatDate = (date, repeat, i) => {
         let now = new Date(Date.now());
         let formattedDate = months[date.getMonth()] + ' ' + date.getDate()
+        if (date < now) {
+
+            storage.load({
+                key: 'reminders',
+            })
+                .then(ret => {
+                    if (repeat !== 'Never') {
+                        if (repeat === 'Hourly') {
+                            date.setHours(date.getHours() + 1);
+                        } else if (repeat === 'Daily') {
+                            date.setDate(date.getDate() + 1);
+                        } else if (repeat === 'Weekly') {
+                            date.setDate(date.getDate() + 7);
+                        }
+                        ret[i]['date'] = date;
+                        storage.save({
+                            key: 'reminders',
+                            data: ret,
+                            expires: null
+                        });
+                    } else {
+                        let temp = ret[i];
+                        ret.splice(i, 1);
+                        storage.save({
+                            key: 'reminders',
+                            data: ret,
+                            expires: null
+                        })
+                        storage.load({
+                            key: 'completedTasks',
+                        })
+                            .then(ret => {
+                                ret.unshift(temp);
+                                storage.save({
+                                    key: 'completedTasks',
+                                    data: ret,
+                                    expires: null
+                                })
+                            })
+                            .catch(err => {
+                                console.log(err.message);
+                            });
+                    }
+                    setCount((c) => c + 1);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
         if (now.getFullYear() !== date.getFullYear()) {
             formattedDate += ', ' + date.getFullYear();
         }
@@ -29,17 +77,11 @@ const MyReminders = ({ navigation }) => {
                 formattedDate = 'Tomorrow';
             }
         }
+        let AMPM = date.getHours() < 12 ? 'AM' : 'PM';
+        let hours = date.getHours() % 12 === 0 ? '12' : String(date.getHours() % 12);
+        let minutes = date.getMinutes() < 10 ? '0' + String(date.getMinutes()) : String(date.getMinutes());
+        formattedDate += '  |  ' + hours + ':' + minutes + ' ' + AMPM;
         return formattedDate;
-    }
-
-    const formatTime = (timeString) => {
-        let time = new Date(timeString)
-        let formattedTime = ''
-        let AMPM = time.getHours() < 12 ? 'AM' : 'PM';
-        let hours = time.getHours() % 12 === 0 ? '12' : String(time.getHours() % 12);
-        let minutes = time.getMinutes() < 10 ? '0' + String(time.getMinutes()) : String(time.getMinutes());
-        formattedTime += hours + ':' + minutes + ' ' + AMPM;
-        return formattedTime;
     }
 
     const formatRepeat = (repeat, minutes) => {
@@ -71,12 +113,12 @@ const MyReminders = ({ navigation }) => {
             {data.length === 0 ? noReminders :
                 <ScrollView style={styles.reminderView} scrollEnabled={data.length * 65 > Dimensions.get('window').height - 400}>
                     {data.map((item, index) => (
-                        <View key={index} style={new Date(item['date']) > new Date(Date.now()) ? styles.reminder : styles.overdueReminder}>
-                            <View style={{ width: 255 }}>
+                        <View key={index} style={styles.reminder}>
+                            <View style={{ width: 300 }}>
                                 <Text style={styles.reminderText}>{item['title']}</Text>
-                                <Text style={styles.reminderDate}>{formatDate(item['date'])}  |  {formatTime(item['date'])}{formatRepeat(item['repeat'], item['minutes'])}</Text>
+                                <Text style={styles.reminderDate}>{formatDate(new Date(item['date']), item['repeat'], index)}{formatRepeat(item['repeat'], item['minutes'])}</Text>
                             </View>
-                            <TouchableOpacity
+                            {/* <TouchableOpacity
                                 style={{ marginRight: 22 }}
                                 onPress={() => {
                                     storage.load({
@@ -118,7 +160,7 @@ const MyReminders = ({ navigation }) => {
                                 }}
                             >
                                 <MaterialCommunityIcons name='check-bold' size={25} />
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                             <TouchableOpacity
                                 onPress={() => navigation.navigate('ViewReminder', {
                                     key: index,

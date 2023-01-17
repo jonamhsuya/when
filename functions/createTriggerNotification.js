@@ -1,16 +1,21 @@
-import notifee, { TriggerType } from '@notifee/react-native';
+import notifee, { TriggerType, RepeatFrequency } from '@notifee/react-native';
 import { formatDate } from "./formatDate";
 
-export const createTriggerNotification = async (date, title) => {
+export const createTriggerNotification = async (date, title, repeat) => {
     await notifee.requestPermission();
     const trigger = {
         type: TriggerType.TIMESTAMP,
-        timestamp: date.getTime()
+        timestamp: date.getTime(),
+        repeatFrequency: repeat === 'Never' ? RepeatFrequency.NONE :
+                            repeat === 'Hourly' ? RepeatFrequency.HOURLY :
+                            repeat === 'Daily' ? RepeatFrequency.DAILY :
+                            repeat === 'Weekly' ? RepeatFrequency.WEEKLY :
+                            RepeatFrequency.NONE
     };
     const id = await notifee.createTriggerNotification(
         {
             title: title,
-            body: formatDate(date),
+            body: formatDate(new Date(trigger.timestamp)),
             ios: {
                 categoryId: 'reminder',
                 sound: 'default'
