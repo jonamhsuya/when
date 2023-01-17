@@ -15,7 +15,7 @@ export const createTriggerNotification = async (date, title, repeat) => {
     const id = await notifee.createTriggerNotification(
         {
             title: title,
-            body: formatDate(new Date(trigger.timestamp)),
+            body: repeat === 'Never' ? formatDate(date) : '',
             ios: {
                 categoryId: 'reminder',
                 sound: 'default'
