@@ -16,4 +16,4 @@ Reminders+ is an app built for users to schedule and edit reminders, allowing in
 
 With a simple, modern UI, Reminders+ makes productivity as easy as the tap of a button.
 
-![Viewing all reminders](https://drive.google.com/file/d/10XNyrkqfcEePBF29lonbS3464Pwc4Mxd/view?usp=share_link)
+![Viewing all reminders](https://i.imgur.com/z3oxRfK.png)
