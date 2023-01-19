@@ -26,13 +26,13 @@ Here are some screenshots of the app:
 <table>
  <tr>
   <td>
-    <img src="https://i.imgur.com/z3oxRfK.png" alt="Viewing all reminders" height="600"/>
+    <img src="https://i.imgur.com/z3oxRfK.png" alt="Viewing all reminders" height="500"/>
   </td>
   <td>
-    <img src="https://i.imgur.com/cfEocHZ.png" alt="Creating a new reminder" height="600"/>
+    <img src="https://i.imgur.com/cfEocHZ.png" alt="Creating a new reminder" height="500"/>
   </td>
    <td>
-    <img src="https://i.imgur.com/YhWWsBI.png" alt="Viewing a current reminder" height="600"/>
+    <img src="https://i.imgur.com/YhWWsBI.png" alt="Viewing a current reminder" height="500"/>
   </td>
  </tr>
  <tr>
@@ -45,10 +45,10 @@ Here are some screenshots of the app:
 <table align="center">
  <tr>
   <td>
-   <img src="https://i.imgur.com/PjN0GYY.png" alt="Viewing all completed tasks" height="600"/>
+   <img src="https://i.imgur.com/PjN0GYY.png" alt="Viewing all completed tasks" height="500"/>
   </td>
   <td>
-   <img src="https://i.imgur.com/1Ebcfch.png" alt="Viewing a completed task" height="600"/>
+   <img src="https://i.imgur.com/1Ebcfch.png" alt="Viewing a completed task" height="500"/>
   </td>
  </tr>
  <tr>
