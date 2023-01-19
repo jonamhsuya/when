@@ -27,19 +27,11 @@ With a simple, modern UI, Reminders+ makes productivity as easy as the tap of a 
    <td>
     <img src="https://i.imgur.com/YhWWsBI.png" alt="Viewing a current reminder" height="600"/>
   </td>
-   <td>
-    <img src="https://i.imgur.com/PjN0GYY.png" alt="Viewing all completed tasks" height="600"/>
-  </td>
-   <td>
-    <img src="https://i.imgur.com/1Ebcfch.png" alt="Viewing a completed task" height="600"/>
-  </td>
  </tr>
  <tr>
    <td align="center">Viewing all reminders</td>
    <td align="center">Creating a new reminder</td>
    <td align="center">Viewing a current reminder</td>
-   <td align="center">Viewing all completed tasks</td>
-   <td align="center">Viewing a completed task</td>
  </tr>
 </table>
   
