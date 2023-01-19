@@ -1,6 +1,6 @@
 # Reminders+
 
-<img src="https://i.imgur.com/T7daC3G.png" alt="Viewing all reminders" height="600"/>
+<img align="center" src="https://i.imgur.com/T7daC3G.png" alt="Logo"/>
 
 Reminders+ is an app built for users to schedule and edit reminders, allowing increased productivity and focus. While currently only having basic features, the app aims to implement more features than current apps that have the same purpose—therefore, the emphasis on the plus.
 
