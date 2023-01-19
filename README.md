@@ -23,7 +23,7 @@ With a simple, modern UI, Reminders+ makes productivity as easy as the tap of a 
 
 Here are some screenshots of the app:
 
-<table>
+<table align="center">
  <tr>
   <td>
     <img src="https://i.imgur.com/z3oxRfK.png" alt="Viewing all reminders" height="500"/>
