@@ -16,6 +16,8 @@ Reminders+ is an app built for users to schedule and edit reminders, allowing in
 
 With a simple, modern UI, Reminders+ makes productivity as easy as the tap of a button.
 
+Here are some screenshots of the app:
+
 <table>
  <tr>
   <td>
