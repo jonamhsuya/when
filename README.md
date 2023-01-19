@@ -8,10 +8,12 @@ Reminders+ is an app built for users to schedule and edit reminders, allowing in
  * And so much more...
 
 ## The App
-##### Currently, Reminders+ allows you to:
+#### Currently, Reminders+ allows you to:
 * Schedule reminders at *any time*, instead of at 5-minute intervals
 * Create recurring reminders that repeat hourly, daily, or weekly
 * View current reminders and edit details
 * View and reschedule completed tasks
 
-With a clean, modern UI, Reminders+ makes productivity as easy as the tap of a button.
+With a simple, modern UI, Reminders+ makes productivity as easy as the tap of a button.
+
+![Viewing all reminders](https://drive.google.com/file/d/10XNyrkqfcEePBF29lonbS3464Pwc4Mxd/view?usp=share_link)
