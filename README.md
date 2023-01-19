@@ -1,6 +1,6 @@
 # Reminders+
 <br>
-<div align="center" style="align-content: center">
+<div align="center" style="align-content: center; border-radius: 10px">
  <img src="https://i.imgur.com/T7daC3G.png" alt="Logo" height="250"/>
 </div>
 <br>
