@@ -9,7 +9,7 @@ Reminders+ is an app built for users to schedule and edit reminders, allowing in
 #### Features coming soon include:
  * Additional repeat frequencies including by the minute, monthly, and yearly
  * An improved UI with a better way of handling past and completed reminders
- * Text-to-speech using Polly AWS to read out reminders for you
+ * Text-to-speech using AWS Polly to read out reminders for you
  * And so much more...
 
 ## The App
