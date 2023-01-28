@@ -32,7 +32,15 @@ const MyReminders = ({ navigation }) => {
                         } else if (repeat === 'Weekly') {
                             date.setDate(date.getDate() + 7);
                         }
-                        ret[i]['date'] = date;
+                        ret[i] = {
+                            'title': ret[i]['title'],
+                            'date': date,
+                            'notifID': ret[i]['notifID'],
+                            // 'shouldSpeak': shouldSpeak,
+                            // 'message': message,
+                            'repeat': ret[i]['repeat'],
+                            'minutes': ret[i]['minutes']
+                        };
                         storage.save({
                             key: 'reminders',
                             data: ret,

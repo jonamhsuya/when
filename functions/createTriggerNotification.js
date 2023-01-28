@@ -17,7 +17,7 @@ export const createTriggerNotification = async (date, title, repeat) => {
             title: title,
             body: repeat === 'Never' ? formatDate(date) : '',
             ios: {
-                categoryId: 'reminder',
+                // categoryId: 'reminder',
                 sound: 'default'
             }
         },

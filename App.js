@@ -190,7 +190,7 @@ const createTriggerNotification = async (title, date, snooze = false, minutesSin
       title: title,
       body: snooze ? minutesSinceOriginal + ' minutes ago' : formatDate(date),
       ios: {
-        categoryId: 'reminder',
+        // categoryId: 'reminder',
         sound: 'default'
       }
     },
