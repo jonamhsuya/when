@@ -34,7 +34,7 @@ const ViewReminder = ({ route, navigation }) => {
   const [endRepeat, setEndRepeat] = useState(new Date(route.params["endRepeat"]));
   const [minutes, setMinutes] = useState(route.params["minutes"]);
 
-  const frequencies = ["Never", "Hourly", "Daily", "Weekly", "Yearly"];
+  const frequencies = ["Never", "Hourly", "Daily", "Weekly"];
 
   const saveAndReturn = async () => {
     if (title === "") {
@@ -73,6 +73,7 @@ const ViewReminder = ({ route, navigation }) => {
         .catch((err) => {
           console.warn(err.message);
         });
+
       updateEvent(eventID, "reminder", title, date, date, repeat, endRepeat);
       navigation.navigate("Home");
     }
@@ -86,7 +87,7 @@ const ViewReminder = ({ route, navigation }) => {
       .then((ret) => {
         whens = ret;
         cancelNotification(notifID);
-        RNCalendarEvents.removeEvent(eventID, {futureEvents: true})
+        RNCalendarEvents.removeEvent(eventID, {exceptionDate: date.toISOString(), futureEvents: true})
         .then(success => {
           whens.splice(index, 1);
           storage.save({
@@ -134,15 +135,15 @@ const ViewReminder = ({ route, navigation }) => {
         style={styles.scrollView}
       >
         <TextInput
-          style={styles.textInput}
           placeholder="Title"
+          placeholderTextColor={"lightgray"}
           value={title}
           onChangeText={(t) => setTitle(t)}
+          style={styles.textInput}
         />
         <View style={styles.createReminderGroup}>
           <View style={styles.filledBox}>
             <Text style={styles.boxText}>Date</Text>
-            {/* <MaterialCommunityIcons name={'calendar-month'} style={styles.boxText} color='black' /> */}
           </View>
           <DateTimePicker
             testID="dateTimePicker"
@@ -156,7 +157,6 @@ const ViewReminder = ({ route, navigation }) => {
         <View style={styles.createReminderGroup}>
           <View style={styles.filledBox}>
             <Text style={styles.boxText}>Time</Text>
-            {/* <MaterialCommunityIcons name={'clock'} style={styles.boxText} color='black' /> */}
           </View>
           <DateTimePicker
             testID="dateTimePicker"
@@ -174,6 +174,7 @@ const ViewReminder = ({ route, navigation }) => {
           </View>
           <SelectDropdown
             data={frequencies}
+            defaultValue={repeat}
             buttonStyle={{
               alignSelf: "flex-end",
               marginHorizontal: 20,
@@ -183,7 +184,6 @@ const ViewReminder = ({ route, navigation }) => {
               borderRadius: 10,
             }}
             dropdownStyle={{ borderRadius: 10 }}
-            defaultValue={repeat}
             onSelect={(selectedItem, index) => {
               setRepeat(selectedItem);
             }}
@@ -211,25 +211,26 @@ const ViewReminder = ({ route, navigation }) => {
           </View>
         )}
         {/* <View style={styles.createReminderGroup}>
-                    <View style={styles.box}>
-                        <Text style={styles.text}>Speech</Text>
-                    </View>
-                    <View style={styles.buffer} />
-                    <Switch
-                        // trackColor={{ true: '#ff6347' }}
-                        onValueChange={onChangeShouldSpeak}
-                        value={shouldSpeak}
-                        style={styles.picker}
-                    />
-                </View>
-                {shouldSpeak &&
-                    <TextInput
-                        placeholder='Enter message to be spoken...'
-                        placeholderTextColor={'lightgray'}
-                        value={message}
-                        onChangeText={(m) => setMessage(m)}
-                        style={styles.smallTextInput}
-                    />} */}
+          <View style={styles.box}>
+            <Text style={styles.text}>Speech</Text>
+          </View>
+          <View style={styles.buffer} />
+          <Switch
+            // trackColor={{ true: '#ff6347' }}
+            onValueChange={onChangeShouldSpeak}
+            value={shouldSpeak}
+            style={styles.picker}
+          />
+        </View>
+        {shouldSpeak && (
+          <TextInput
+            placeholder="Enter message to be spoken..."
+            placeholderTextColor={"lightgray"}
+            value={message}
+            onChangeText={(m) => setMessage(m)}
+            style={styles.smallTextInput}
+          />
+        )} */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.shortButton} onPress={saveAndReturn}>
             <MaterialCommunityIcons

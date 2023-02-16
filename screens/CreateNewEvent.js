@@ -27,7 +27,7 @@ const CreateNewEvent = ({ navigation }) => {
   const [endRepeat, setEndRepeat] = useState(new Date(Date.now() + 60 * 60 * 1000));
   const [minutes, setMinutes] = useState(0);
 
-  const frequencies = ["Never", "Hourly", "Daily", "Weekly", "Yearly"];
+  const frequencies = ["Never", "Hourly", "Daily", "Weekly"];
 
   const addAndReturn = async () => {
     if (title === "") {

@@ -31,6 +31,8 @@ const App = () => {
     })
     .then(() => {
       // reminders has already been initialized, do nothing
+      storage.clearMap();
+      storage.clearMapForKey('firstTime');
     })
     .catch(() => {
       // user is accessing app for the first time

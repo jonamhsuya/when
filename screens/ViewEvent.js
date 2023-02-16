@@ -34,13 +34,13 @@ const ViewEvent = ({ route, navigation }) => {
   const [endRepeat, setEndRepeat] = useState(new Date(route.params["endRepeat"]));
   const [minutes, setMinutes] = useState(route.params["minutes"]);
 
-  const frequencies = ["Never", "Hourly", "Daily", "Weekly", "Yearly"];
+  const frequencies = ["Never", "Hourly", "Daily", "Weekly"];
 
   const saveAndReturn = async () => {
     if (title === "") {
       Alert.alert("Please enter a title.");
     } else if (startDate < new Date(Date.now())) {
-      Alert.alert("Please choose a date in the future.");
+      Alert.alert("Please choose a start date in the future.");
     } else if (endDate < startDate) {
       Alert.alert("The end date must be after the start date.");
     }
@@ -82,7 +82,7 @@ const ViewEvent = ({ route, navigation }) => {
     }
   };
 
-  const deleteAndReturn = () => {
+  const deleteAndReturn = (futureEvents) => {
     storage
       .load({
         key: "whens",
@@ -90,9 +90,25 @@ const ViewEvent = ({ route, navigation }) => {
       .then((ret) => {
         whens = ret;
         cancelNotification(notifID);
-        RNCalendarEvents.removeEvent(eventID, {exceptionDate: startDate.toISOString(), futureEvents: true})
+        RNCalendarEvents.removeEvent(eventID, {exceptionDate: startDate.toISOString(), futureEvents: futureEvents})
         .then(success => {
-          whens.splice(index, 1);
+          if (futureEvents) {
+            whens.splice(index, 1);
+          }
+          else {
+            let add = 60 * 1000;
+            if (frequencies.indexOf(repeat) >= frequencies.indexOf("Hourly")) {
+              add *= 60;
+            }
+            if (frequencies.indexOf(repeat) >= frequencies.indexOf("Daily")) {
+              add *= 24;
+            }
+            if (frequencies.indexOf(repeat) >= frequencies.indexOf("Weekly")) {
+              add *= 7;
+            }
+            whens[index]["startDate"] = new Date(startDate.getTime() + add).toISOString();
+            whens[index]["endDate"] = new Date(endDate.getTime() + add).toISOString();
+          }
           storage.save({
             key: "whens",
             data: whens,
@@ -206,7 +222,7 @@ const ViewEvent = ({ route, navigation }) => {
             <DateTimePicker
               testID="dateTimePicker"
               value={endRepeat}
-              mode={"datetime"}
+              mode={"date"}
               is24Hour={true}
               onChange={onChangeEndRepeat}
               style={styles.picker}
@@ -245,7 +261,15 @@ const ViewEvent = ({ route, navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.shortButton}
-            onPress={deleteAndReturn}
+            onPress={() => {
+              if (route.params["repeat"] !== "Never") {
+                Alert.alert('Do you want to delete this event only, or all future events as well?', '', [
+                  {text: 'This Event Only', onPress: () => deleteAndReturn(false)},
+                  {text: 'All Future Events', onPress: () => deleteAndReturn(true)},
+                  {text: 'Cancel', style: 'cancel'},
+                ], {cancelable: false});
+              }
+            }}
           >
             <MaterialCommunityIcons
               name={"trash-can-outline"}

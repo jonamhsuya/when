@@ -24,10 +24,10 @@ const CreateNewAlarm = ({ navigation }) => {
   const [date, setDate] = useState(new Date(Date.now()));
   const [time, setTime] = useState(new Date(Date.now()));
   const [repeat, setRepeat] = useState("Never");
-  const [endRepeat, setEndRepeat] = useState(new Date(Date.now()));
+  const [endRepeat, setEndRepeat] = useState(new Date(Date.now() + 60 * 60 * 1000));
   const [minutes, setMinutes] = useState(0);
 
-  const frequencies = ["Never", "Hourly", "Daily", "Weekly", "Yearly"];
+  const frequencies = ["Never", "Hourly", "Daily", "Weekly"];
 
   const addAndReturn = async () => {
     if (title === "") {
@@ -64,6 +64,7 @@ const CreateNewAlarm = ({ navigation }) => {
         .catch((err) => {
           console.warn(err.message);
         });
+
       navigation.navigate("Home");
     }
   };
