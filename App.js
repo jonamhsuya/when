@@ -1,53 +1,96 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import notifee, { TriggerType, EventType } from '@notifee/react-native';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import React, { useEffect, useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import notifee, { EventType } from "@notifee/react-native";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import RNCalendarEvents from "react-native-calendar-events";
 // import * as Speech from 'expo-speech';
 
-import MyReminders from './screens/MyReminders';
-import CompletedTasks from './screens/CompletedTasks';
-import CreateNewReminder from './screens/CreateNewReminder';
-import ViewReminder from './screens/ViewReminder';
-import ViewCompletedTask from './screens/ViewCompletedTask';
+import Home from "./screens/Home";
+import Calendar from "./screens/Calendar";
+import CreateNewAlarm from "./screens/CreateNewAlarm";
+import CreateNewReminder from "./screens/CreateNewReminder";
+import CreateNewEvent from "./screens/CreateNewEvent";
+import ViewAlarm from "./screens/ViewAlarm";
+import ViewReminder from "./screens/ViewReminder";
+import ViewEvent from "./screens/ViewEvent";
 
-import storage from './storage/storage';
-import { formatDate } from './functions/formatDate';
+import storage from "./storage/storage";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const App = () => {
-
   const [count, setCount] = useState(0);
 
-  storage.load({
-    key: 'firstTime',
-  })
+  storage
+    .load({
+      key: "firstTime",
+    })
     .then(() => {
       // reminders has already been initialized, do nothing
     })
     .catch(() => {
       // user is accessing app for the first time
-      setCategories();
       // save empty array in storage to store future reminders and completed tasks
       storage.save({
-        key: 'reminders',
+        key: "whens",
         data: [],
         expires: null,
       });
       storage.save({
-        key: 'completedTasks',
+        key: "completedTasks",
         data: [],
         expires: null,
       });
       // store firstTime value so array is not reset every time
       storage.save({
-        key: 'firstTime',
+        key: "firstTime",
         data: false,
         expires: null,
+      });
+      // create calendars for Whens and store IDs
+      RNCalendarEvents.requestPermissions().then((permission) => {
+        if (permission === "authorized") {
+          RNCalendarEvents.saveCalendar({
+            title: "Alarms",
+            color: "navy",
+            entityType: "event",
+            name: "Alarms",
+          }).then((id) => {
+            storage.save({
+              key: "alarmsID",
+              data: id,
+              expires: null,
+            });
+          });
+          RNCalendarEvents.saveCalendar({
+            title: "Reminders",
+            color: "darkorange",
+            entityType: "event",
+            name: "Reminders",
+          }).then((id) => {
+            storage.save({
+              key: "remindersID",
+              data: id,
+              expires: null,
+            });
+          });
+          RNCalendarEvents.saveCalendar({
+            title: "Events",
+            color: "red",
+            entityType: "event",
+            name: "Events",
+          }).then((id) => {
+            storage.save({
+              key: "eventsID",
+              data: id,
+              expires: null,
+            });
+          });
+        }
       });
     });
 
@@ -61,64 +104,6 @@ const App = () => {
     });
   }, []);
 
-  notifee.onBackgroundEvent(async ({ type, detail }) => {
-    const { notification, pressAction } = detail;
-
-    if (type === EventType.ACTION_PRESS) {
-      onActionPress(notification, pressAction);
-    }
-  });
-
-  const onActionPress = (notification, pressAction) => {
-    storage.load({
-      key: 'reminders',
-    })
-      .then(async ret => {
-        let i = 0;
-        while (notification.id !== ret[i]['notifID']) {
-          i++;
-        }
-        if (pressAction.id === 'snooze') {
-          const title = notification.title;
-          const newDate = Date.now() + 5 * 60 * 1000;
-          const oldDate = new Date(ret[i]['date']);
-          const newNotifID = await createTriggerNotification(
-            title,
-            new Date(newDate),
-            true,
-            Math.round((newDate - oldDate.getTime()) / (60 * 1000))
-          );
-          ret[i]['notifID'] = newNotifID;
-        } else if (pressAction.id === 'done') {
-          let temp = ret[i];
-          ret.splice(i, 1);
-          storage.load({
-            key: 'completedTasks',
-          })
-            .then(ret => {
-              ret.unshift(temp);
-              storage.save({
-                key: 'completedTasks',
-                data: ret,
-                expires: null,
-              });
-            })
-            .catch(err => {
-              console.log(err);
-            })
-        }
-        storage.save({
-          key: 'reminders',
-          data: ret,
-          expires: null,
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    setCount((c) => c + 1);
-  }
-
   const HomeScreen = () => {
     return (
       <Tab.Navigator
@@ -126,93 +111,73 @@ const App = () => {
           tabBarIcon: ({ color, size }) => {
             let iconName;
 
-            if (route.name === 'My Reminders') {
-              iconName = 'format-list-checkbox'
-            } else if (route.name === 'Completed Tasks') {
-              iconName = 'check-bold'
+            if (route.name === "Home") {
+              iconName = "home";
+            } else if (route.name === "Calendar") {
+              iconName = "calendar-month";
             }
 
-            return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
+            return (
+              <MaterialCommunityIcons
+                name={iconName}
+                size={size}
+                color={color}
+              />
+            );
           },
-          tabBarActiveTintColor: '#D32027',
-          tabBarInactiveTintColor: '#AAAAAA',
+          tabBarActiveTintColor: "#000000",
+          tabBarInactiveTintColor: "#999999",
         })}
       >
-        <Tab.Screen name='My Reminders' component={MyReminders} />
-        <Tab.Screen name='Completed Tasks' component={CompletedTasks} />
+        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Calendar" component={Calendar} />
       </Tab.Navigator>
     );
-  }
+  };
 
   return (
     <NavigationContainer>
       <SafeAreaProvider>
-        <Stack.Navigator
-          initialRouteName='Home'
-        >
+        <Stack.Navigator initialRouteName="HomeScreen">
           <Stack.Screen
-            name='Home'
+            name="HomeScreen"
             component={HomeScreen}
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name='CreateNewReminder'
+            name="CreateNewAlarm"
+            component={CreateNewAlarm}
+            options={{ title: "Create New Alarm" }}
+          />
+          <Stack.Screen
+            name="CreateNewReminder"
             component={CreateNewReminder}
-            options={{ title: 'Create New Reminder' }}
+            options={{ title: "Create New Reminder" }}
           />
           <Stack.Screen
-            name='ViewReminder'
+            name="CreateNewEvent"
+            component={CreateNewEvent}
+            options={{ title: "Create New Event" }}
+          />
+          <Stack.Screen
+            name="ViewAlarm"
+            component={ViewAlarm}
+            options={{ title: "View Alarm" }}
+          />
+          <Stack.Screen
+            name="ViewReminder"
             component={ViewReminder}
-            options={{ title: 'View Reminder' }}
+            options={{ title: "View Reminder" }}
           />
           <Stack.Screen
-            name='ViewCompletedTask'
-            component={ViewCompletedTask}
-            options={{ title: 'View Completed Task' }}
+            name="ViewEvent"
+            component={ViewEvent}
+            options={{ title: "View Event" }}
           />
         </Stack.Navigator>
       </SafeAreaProvider>
     </NavigationContainer>
   );
-
 };
 
 export default App;
-
-
-const createTriggerNotification = async (title, date, snooze = false, minutesSinceOriginal = 0) => {
-  const trigger = {
-    type: TriggerType.TIMESTAMP,
-    timestamp: date.getTime()
-  };
-  const id = await notifee.createTriggerNotification(
-    {
-      title: title,
-      body: snooze ? minutesSinceOriginal + ' minutes ago' : formatDate(date),
-      ios: {
-        // categoryId: 'reminder',
-        sound: 'default'
-      }
-    },
-    trigger,
-  );
-  return id;
-}
-
-const setCategories = async () => {
-  await notifee.setNotificationCategories([
-    {
-      id: 'reminder',
-      actions: [
-        {
-          id: 'snooze',
-          title: 'Snooze ⏰',
-        },
-        {
-          id: 'done',
-          title: 'Done ✅',
-        },
-      ],
-    },
-  ]);
-}

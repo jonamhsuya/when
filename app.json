@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Reminders+",
-    "slug": "Reminders+",
+    "name": "When",
+    "slug": "When",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,14 +19,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.RemindersPlus"
+      "bundleIdentifier": "com.anonymous.When"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.anonymous.RemindersPlus"
+      "package": "com.anonymous.When"
     },
     "web": {
       "favicon": "./assets/favicon.png"
