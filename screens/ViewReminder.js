@@ -79,7 +79,7 @@ const ViewReminder = ({ route, navigation }) => {
     }
   };
 
-  const deleteAndReturn = () => {
+  const deleteAndReturn = (futureEvents, notOnCalendar=false) => {
     storage
       .load({
         key: "whens",
@@ -87,9 +87,21 @@ const ViewReminder = ({ route, navigation }) => {
       .then((ret) => {
         whens = ret;
         cancelNotification(notifID);
-        RNCalendarEvents.removeEvent(eventID, {exceptionDate: date.toISOString(), futureEvents: true})
+        RNCalendarEvents.removeEvent(eventID, {exceptionDate: date.toISOString(), futureEvents: futureEvents})
         .then(success => {
-          whens.splice(index, 1);
+          if (futureEvents) {
+            whens.splice(index, 1);
+          }
+          else {
+            let add = 60 * 60 * 1000; // one hour
+            if (frequencies.indexOf(repeat) >= frequencies.indexOf("Daily")) {
+              add *= 24;
+            }
+            if (frequencies.indexOf(repeat) >= frequencies.indexOf("Weekly")) {
+              add *= 7;
+            }
+            whens[index]["date"] = new Date(date.getTime() + add).toISOString();
+          }
           storage.save({
             key: "whens",
             data: whens,
@@ -97,10 +109,29 @@ const ViewReminder = ({ route, navigation }) => {
           navigation.navigate("Home");
         })
         .catch((err) => {
-          console.warn(err);
-          Alert.alert(
-            "There was an error in removing your When. Please try again."
-          );
+          if (notOnCalendar) {
+            if (futureEvents) {
+              whens.splice(index, 1);
+            }
+            else {
+              let add = 24 * 60 * 60 * 1000; // one day
+              if (frequencies.indexOf(repeat) <= frequencies.indexOf("Hourly")) {
+                add /= 24
+              }
+              whens[index]["date"] = new Date(date.getTime() + add).toISOString();
+            }
+            storage.save({
+              key: "whens",
+              data: whens,
+            });
+            navigation.navigate("Home");
+          }
+          else {
+            console.warn(err);
+            Alert.alert(
+              "There was an error in removing your When. Please try again."
+            );
+          }
         });
       })
       .catch((err) => {
@@ -110,17 +141,17 @@ const ViewReminder = ({ route, navigation }) => {
 
   const onChangeDate = (event, selectedDate) => {
     setDate(selectedDate);
-    date.setHours(time.getHours(), time.getMinutes(), 0);
+    date.setHours(time.getHours(), time.getMinutes(), 0, 0);
   };
 
   const onChangeTime = (event, selectedTime) => {
     setTime(selectedTime);
-    date.setHours(time.getHours(), time.getMinutes(), 0);
+    date.setHours(time.getHours(), time.getMinutes(), 0, 0);
   };
 
   const onChangeEndRepeat = (event, selectedDate) => {
     setEndRepeat(selectedDate);
-    endRepeat.setHours(date.getHours(), date.getMinutes() + 1, 0);
+    endRepeat.setHours(date.getHours(), date.getMinutes(), 0, 1);
   };
 
   // const onChangeShouldSpeak = () => {
@@ -203,7 +234,7 @@ const ViewReminder = ({ route, navigation }) => {
             <DateTimePicker
               testID="dateTimePicker"
               value={endRepeat}
-              mode={"date"}
+              mode={frequencies.indexOf(route.params["repeat"]) < frequencies.indexOf("Daily") ? "datetime" : "date"}
               is24Hour={true}
               onChange={onChangeEndRepeat}
               style={styles.picker}
@@ -242,7 +273,22 @@ const ViewReminder = ({ route, navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.shortButton}
-            onPress={deleteAndReturn}
+            onPress={() => {
+              if (route.params["repeat"] !== "Never") {
+                Alert.alert('Do you want to delete this reminder only, or all future reminders as well?', '', [
+                  {text: 'Delete This Reminder Only', onPress: () => deleteAndReturn(false,
+                    frequencies.indexOf(route.params["repeat"]) < frequencies.indexOf("Daily"))},
+                  {text: 'Delete All Future Reminders', onPress: () => deleteAndReturn(true,
+                    frequencies.indexOf(route.params["repeat"]) < frequencies.indexOf("Daily"))},
+                  {text: 'Cancel', style: 'cancel'},
+                ]);
+              } else {
+                Alert.alert('Are you sure you want to delete this reminder?', '', [
+                  {text: 'Delete', onPress: () => deleteAndReturn(true)},
+                  {text: 'Cancel', style: 'cancel'},
+                ]);
+              }
+            }}
           >
             <MaterialCommunityIcons
               name={"trash-can-outline"}

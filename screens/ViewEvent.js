@@ -82,7 +82,7 @@ const ViewEvent = ({ route, navigation }) => {
     }
   };
 
-  const deleteAndReturn = (futureEvents) => {
+  const deleteAndReturn = (futureEvents, notOnCalendar=false) => {
     storage
       .load({
         key: "whens",
@@ -96,10 +96,7 @@ const ViewEvent = ({ route, navigation }) => {
             whens.splice(index, 1);
           }
           else {
-            let add = 60 * 1000;
-            if (frequencies.indexOf(repeat) >= frequencies.indexOf("Hourly")) {
-              add *= 60;
-            }
+            let add = 60 * 60 * 1000; // one hour
             if (frequencies.indexOf(repeat) >= frequencies.indexOf("Daily")) {
               add *= 24;
             }
@@ -116,10 +113,30 @@ const ViewEvent = ({ route, navigation }) => {
           navigation.navigate("Home");
         })
         .catch((err) => {
-          console.warn(err);
-          Alert.alert(
-            "There was an error in removing your When. Please try again."
-          );
+          if (notOnCalendar) {
+            if (futureEvents) {
+              whens.splice(index, 1);
+            }
+            else {
+              let add = 24 * 60 * 60 * 1000; // one day
+              if (frequencies.indexOf(repeat) <= frequencies.indexOf("Hourly")) {
+                add /= 24
+              }
+              whens[index]["startDate"] = new Date(startDate.getTime() + add).toISOString();
+              whens[index]["endDate"] = new Date(endDate.getTime() + add).toISOString();
+            }
+            storage.save({
+              key: "whens",
+              data: whens,
+            });
+            navigation.navigate("Home");
+          }
+          else {
+            console.warn(err);
+            Alert.alert(
+              "There was an error in removing your When. Please try again."
+            );
+          }
         });
       })
       .catch((err) => {
@@ -129,17 +146,17 @@ const ViewEvent = ({ route, navigation }) => {
 
   const onChangeStartDate = (event, selectedDate) => {
     setStartDate(selectedDate);
-    startDate.setSeconds(0);
+    startDate.setSeconds(0, 0);
   };
 
   const onChangeEndDate = (event, selectedDate) => {
     setEndDate(selectedDate);
-    endDate.setSeconds(0);
+    endDate.setSeconds(0, 0);
   };
 
   const onChangeEndRepeat = (event, selectedDate) => {
     setEndRepeat(selectedDate);
-    endRepeat.setHours(endDate.getHours(), endDate.getMinutes() + 1, 0);
+    endRepeat.setHours(endDate.getHours(), endDate.getMinutes(), 0, 1);
   };
 
   // const onChangeShouldSpeak = () => {
@@ -180,7 +197,7 @@ const ViewEvent = ({ route, navigation }) => {
           <DateTimePicker
             testID="dateTimePicker"
             value={endDate}
-            mode={"date"}
+            mode={"datetime"}
             is24Hour={true}
             onChange={onChangeEndDate}
             style={styles.picker}
@@ -264,10 +281,17 @@ const ViewEvent = ({ route, navigation }) => {
             onPress={() => {
               if (route.params["repeat"] !== "Never") {
                 Alert.alert('Do you want to delete this event only, or all future events as well?', '', [
-                  {text: 'This Event Only', onPress: () => deleteAndReturn(false)},
-                  {text: 'All Future Events', onPress: () => deleteAndReturn(true)},
+                  {text: 'Delete This Event Only', onPress: () => deleteAndReturn(false,
+                    frequencies.indexOf(route.params["repeat"]) < frequencies.indexOf("Daily"))},
+                  {text: 'Delete All Future Events', onPress: () => deleteAndReturn(true,
+                    frequencies.indexOf(route.params["repeat"]) < frequencies.indexOf("Daily"))},
                   {text: 'Cancel', style: 'cancel'},
-                ], {cancelable: false});
+                ]);
+              } else {
+                Alert.alert('Are you sure you want to delete this event?', '', [
+                  {text: 'Delete', onPress: () => deleteAndReturn(true)},
+                  {text: 'Cancel', style: 'cancel'},
+                ]);
               }
             }}
           >

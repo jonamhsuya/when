@@ -74,17 +74,17 @@ const CreateNewEvent = ({ navigation }) => {
 
   const onChangeStartDate = (event, selectedDate) => {
     setStartDate(selectedDate);
-    startDate.setSeconds(0);
+    startDate.setSeconds(0, 0);
   };
 
   const onChangeEndDate = (event, selectedDate) => {
     setEndDate(selectedDate);
-    endDate.setSeconds(0);
+    endDate.setSeconds(0, 0);
   };
 
   const onChangeEndRepeat = (event, selectedDate) => {
     setEndRepeat(selectedDate);
-    endRepeat.setHours(endDate.getHours(), endDate.getMinutes() + 1, 0);
+    endRepeat.setHours(endDate.getHours(), endDate.getMinutes(), 0, 1);
   };
 
   //   const onChangeShouldSpeak = () => {

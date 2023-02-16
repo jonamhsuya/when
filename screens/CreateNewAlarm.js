@@ -71,17 +71,17 @@ const CreateNewAlarm = ({ navigation }) => {
 
   const onChangeDate = (event, selectedDate) => {
     setDate(selectedDate);
-    date.setHours(time.getHours(), time.getMinutes(), 0);
+    date.setHours(time.getHours(), time.getMinutes(), 0, 0);
   };
 
   const onChangeTime = (event, selectedTime) => {
     setTime(selectedTime);
-    date.setHours(time.getHours(), time.getMinutes(), 0);
+    date.setHours(time.getHours(), time.getMinutes(), 0, 0);
   };
 
   const onChangeEndRepeat = (event, selectedDate) => {
     setEndRepeat(selectedDate);
-    endRepeat.setHours(date.getHours(), date.getMinutes() + 1, 0);
+    endRepeat.setHours(date.getHours(), date.getMinutes(), 0, 1);
   };
 
   //   const onChangeShouldSpeak = () => {
