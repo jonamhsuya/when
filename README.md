@@ -4,13 +4,7 @@
  <img src="https://i.imgur.com/Eys5Tsf.png" alt="Logo" height="250"/>
 </div>
 <br>
-When is a productivity-focused app, streamlining the process of planning your day.
-
-#### Features coming soon include:
- * Additional repeat frequencies including by the minute, monthly, and yearly
- * A custom calendar in the app to eventually replace the need for iOS's calendar
- * Text-to-speech using Expo Speech to announce your Whens
- * And so much more...
+When is a productivity-focused app, streamlining the process of planning your day. Often, the use of multiple apps to build a schedule can be tedious—that's why When is integrating alarms, reminders and events all into one app. With a simple, modern UI, When makes productivity as easy as the tap of a button.
 
 ## The App
 #### Currently, When allows you to:
@@ -20,7 +14,11 @@ When is a productivity-focused app, streamlining the process of planning your da
 * View current Whens and edit details
 * View and reschedule completed Whens
 
-With a simple, modern UI, When makes productivity as easy as the tap of a button.
+#### Features coming soon include:
+ * Additional repeat frequencies including by the minute, monthly, and yearly
+ * A custom calendar in the app to eventually replace the need for iOS's calendar
+ * Text-to-speech using Expo Speech to announce your Whens
+ * And so much more...
 
 Here are some screenshots of the app:
 
