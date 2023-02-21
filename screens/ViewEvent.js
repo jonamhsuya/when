@@ -92,7 +92,7 @@ const ViewEvent = ({ route, navigation }) => {
         cancelNotification(notifID);
         RNCalendarEvents.removeEvent(eventID, {exceptionDate: startDate.toISOString(), futureEvents: futureEvents})
         .then(success => {
-          if (futureEvents) {
+          if (futureEvents || endDate.getTime() + 1 >= new Date(route.params["endRepeat"]).getTime()) {
             whens.splice(index, 1);
           }
           else {
@@ -103,8 +103,9 @@ const ViewEvent = ({ route, navigation }) => {
             if (frequencies.indexOf(repeat) >= frequencies.indexOf("Weekly")) {
               add *= 7;
             }
+            let newEndDate = new Date(endDate.getTime() + add);
             whens[index]["startDate"] = new Date(startDate.getTime() + add).toISOString();
-            whens[index]["endDate"] = new Date(endDate.getTime() + add).toISOString();
+            whens[index]["endDate"] = newEndDate.toISOString();
           }
           storage.save({
             key: "whens",
@@ -114,7 +115,7 @@ const ViewEvent = ({ route, navigation }) => {
         })
         .catch((err) => {
           if (notOnCalendar) {
-            if (futureEvents) {
+            if (futureEvents || endDate.getTime() + 1 >= new Date(route.params["endRepeat"]).getTime()) {
               whens.splice(index, 1);
             }
             else {
@@ -122,8 +123,9 @@ const ViewEvent = ({ route, navigation }) => {
               if (frequencies.indexOf(repeat) <= frequencies.indexOf("Hourly")) {
                 add /= 24
               }
+              let newEndDate = new Date(endDate.getTime() + add);
               whens[index]["startDate"] = new Date(startDate.getTime() + add).toISOString();
-              whens[index]["endDate"] = new Date(endDate.getTime() + add).toISOString();
+              whens[index]["endDate"] = newEndDate.toISOString();
             }
             storage.save({
               key: "whens",
