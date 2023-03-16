@@ -1,4 +1,5 @@
 import notifee, { TriggerType, RepeatFrequency } from "@notifee/react-native";
+import * as Notifications from "expo-notifications"
 
 /* const formatDate = (date) => {
   let now = new Date(Date.now());

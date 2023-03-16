@@ -89,6 +89,7 @@ const ViewReminder = ({ route, navigation }) => {
         cancelNotification(notifID);
         RNCalendarEvents.removeEvent(eventID, {exceptionDate: date.toISOString(), futureEvents: futureEvents})
         .then(success => {
+          setDate(new Date(route.params['date']));
           if (futureEvents || date.getTime() + 1 >= new Date(route.params["endRepeat"]).getTime()) {
             whens.splice(index, 1);
           }
@@ -111,6 +112,7 @@ const ViewReminder = ({ route, navigation }) => {
         })
         .catch((err) => {
           if (notOnCalendar) {
+            setDate(new Date(route.params['date']));
             if (futureEvents || date.getTime() + 1 >= new Date(route.params["endRepeat"]).getTime()) {
               whens.splice(index, 1);
             }

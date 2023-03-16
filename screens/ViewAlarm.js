@@ -87,8 +87,9 @@ const ViewAlarm = ({ route, navigation }) => {
       .then((ret) => {
         whens = ret;
         cancelNotification(notifID);
-        RNCalendarEvents.removeEvent(eventID, {exceptionDate: date.toISOString(), futureEvents: futureEvents})
+        RNCalendarEvents.removeEvent(eventID, {exceptionDate: new Date(route.params['date']).toISOString(), futureEvents: futureEvents})
         .then(success => {
+          setDate(new Date(route.params['date']));
           if (futureEvents || date.getTime() + 1 >= new Date(route.params["endRepeat"]).getTime()) {
             whens.splice(index, 1);
           }
@@ -111,6 +112,7 @@ const ViewAlarm = ({ route, navigation }) => {
         })
         .catch((err) => {
           if (notOnCalendar) {
+            setDate(new Date(route.params['date']));
             if (futureEvents || date.getTime() + 1 >= new Date(route.params["endRepeat"]).getTime()) {
               whens.splice(index, 1);
             }

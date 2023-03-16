@@ -31,8 +31,6 @@ const App = () => {
     })
     .then(() => {
       // reminders has already been initialized, do nothing
-      storage.clearMap();
-      storage.clearMapForKey('firstTime');
     })
     .catch(() => {
       // user is accessing app for the first time
@@ -56,41 +54,76 @@ const App = () => {
       // create calendars for Whens and store IDs
       RNCalendarEvents.requestPermissions().then((permission) => {
         if (permission === "authorized") {
-          RNCalendarEvents.saveCalendar({
-            title: "Alarms",
-            color: "navy",
-            entityType: "event",
-            name: "Alarms",
-          }).then((id) => {
-            storage.save({
-              key: "alarmsID",
-              data: id,
-              expires: null,
-            });
-          });
-          RNCalendarEvents.saveCalendar({
-            title: "Reminders",
-            color: "darkorange",
-            entityType: "event",
-            name: "Reminders",
-          }).then((id) => {
-            storage.save({
-              key: "remindersID",
-              data: id,
-              expires: null,
-            });
-          });
-          RNCalendarEvents.saveCalendar({
-            title: "Events",
-            color: "red",
-            entityType: "event",
-            name: "Events",
-          }).then((id) => {
-            storage.save({
-              key: "eventsID",
-              data: id,
-              expires: null,
-            });
+          let alarms = false;
+          let reminders = false;
+          let events = false;
+          RNCalendarEvents.findCalendars().then((arr) => {
+            for (let i = 0; i < arr.length; i++) {
+              if (arr[i]["title"] === "Alarms") {
+                storage.save({
+                  key: "alarmsID",
+                  data: arr[i]["id"],
+                  expires: null,
+                });
+                alarms = true;
+              } else if (arr[i]["title"] === "Reminders") {
+                storage.save({
+                  key: "remindersID",
+                  data: arr[i]["id"],
+                  expires: null,
+                });
+                reminders = true;
+              } else if (arr[i]["title"] === "Events") {
+                storage.save({
+                  key: "eventsID",
+                  data: arr[i]["id"],
+                  expires: null,
+                });
+                events = true;
+              }
+            }
+            if (!alarms) {
+              RNCalendarEvents.saveCalendar({
+                title: "Alarms",
+                color: "navy",
+                entityType: "event",
+                name: "Alarms",
+              }).then((id) => {
+                storage.save({
+                  key: "alarmsID",
+                  data: id,
+                  expires: null,
+                });
+              });
+            }
+            if (!reminders) {
+              RNCalendarEvents.saveCalendar({
+                title: "Reminders",
+                color: "darkorange",
+                entityType: "event",
+                name: "Reminders",
+              }).then((id) => {
+                storage.save({
+                  key: "remindersID",
+                  data: id,
+                  expires: null,
+                });
+              });
+            }
+            if (!events) {
+              RNCalendarEvents.saveCalendar({
+                title: "Events",
+                color: "red",
+                entityType: "event",
+                name: "Events",
+              }).then((id) => {
+                storage.save({
+                  key: "eventsID",
+                  data: id,
+                  expires: null,
+                });
+              });
+            }
           });
         }
       });
