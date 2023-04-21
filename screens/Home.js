@@ -74,7 +74,7 @@ const Home = ({ navigation }) => {
         <ScrollView
           style={styles.reminderView}
           scrollEnabled={
-            data.length * 75 > Dimensions.get("window").height - 400
+            data.length * 80 > Dimensions.get("window").height * 0.55
           }
         >
           {data.map((item, index) => (
@@ -145,7 +145,7 @@ const Home = ({ navigation }) => {
         </ScrollView>
       )}
       <Modal
-        animationType="fade"
+        animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {

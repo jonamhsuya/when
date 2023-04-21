@@ -85,10 +85,10 @@ export default Alarm = ({ item, index, onPress }) => {
       <MaterialCommunityIcons
         name={"alarm"}
         size={20}
-        style={{ alignSelf: "center", margin: 10, marginRight: 15 }}
+        style={{ alignSelf: "center", margin: 10, marginRight: 20 }}
         color="white"
       />
-      <View style={{ width: 245 }}>
+      <View style={{ width: Dimensions.get('screen').width * 0.625 }}>
         <Text
           style={
             new Date(item["date"]) > new Date(Date.now())
@@ -109,7 +109,7 @@ export default Alarm = ({ item, index, onPress }) => {
           {formatRepeat(item["repeat"], item["minutes"])}
         </Text>
       </View>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity onPress={onPress} style={{margin: 10}}>
         <MaterialCommunityIcons name={"lead-pencil"} size={25} color="white" />
       </TouchableOpacity>
     </View>
@@ -126,9 +126,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 10,
     margin: 5,
-    width: Dimensions.get("window").width - 40,
     height: 70,
-    shadowOffset: { width: 0, height: 0 },
     backgroundColor: "black",
   },
 

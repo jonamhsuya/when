@@ -109,10 +109,10 @@ export default Event = ({ item, index, onPress }) => {
         <MaterialCommunityIcons
           name={"calendar"}
           size={20}
-          style={{ alignSelf: "center", margin: 10, marginRight: 15 }}
+          style={{ alignSelf: "center", margin: 10, marginRight: 20 }}
           color="black"
         />
-        <View style={{ width: 245 }}>
+        <View style={{ width: Dimensions.get('screen').width * 0.625 }}>
           <Text
             style={
               new Date(item["endDate"]) > new Date(Date.now())
@@ -133,7 +133,7 @@ export default Event = ({ item, index, onPress }) => {
             {formatRepeat(item["repeat"], item["minutes"])}
           </Text>
         </View>
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity onPress={onPress} style={{margin: 10}}>
           <MaterialCommunityIcons name={"lead-pencil"} size={25} />
         </TouchableOpacity>
       </View>
@@ -143,24 +143,22 @@ export default Event = ({ item, index, onPress }) => {
 
 const styles = StyleSheet.create({
   event: {
+    alignItems: "center",
     alignSelf: "center",
     borderWidth: 1,
+    borderRadius: 2.5,
     margin: 5,
-    width: Dimensions.get("window").width - 40,
     height: 70,
-    borderRadius: 3,
-    shadowOffset: { width: 0, height: 0 },
     backgroundColor: "white",
   },
 
   topBar: {
     alignSelf: "center",
-    width: Dimensions.get("window").width - 40,
+    width: Dimensions.get("window").width * 0.625 + 115,
     height: 15,
-    borderWidth: 1,
-    borderTopWidth: 0,
-    borderTopRightRadius: 3,
-    borderTopLeftRadius: 3,
+    borderBottomWidth: 1,
+    borderTopRightRadius: 2.5,
+    borderTopLeftRadius: 2.5,
     backgroundColor: "#EE0000",
   },
 
@@ -168,7 +166,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    width: Dimensions.get("window").width - 40,
+    // width: Dimensions.get("window").width - 40,
     height: 55,
     paddingHorizontal: 10,
   },

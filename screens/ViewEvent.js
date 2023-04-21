@@ -92,7 +92,8 @@ const ViewEvent = ({ route, navigation }) => {
         cancelNotification(notifID);
         RNCalendarEvents.removeEvent(eventID, {exceptionDate: startDate.toISOString(), futureEvents: futureEvents})
         .then(success => {
-          setDate(new Date(route.params['date']));
+          setStartDate(new Date(route.params['startDate']));
+          setEndDate(new Date(route.params['endDate']));
           if (futureEvents || endDate.getTime() + 1 >= new Date(route.params["endRepeat"]).getTime()) {
             whens.splice(index, 1);
           }

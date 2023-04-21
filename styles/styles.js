@@ -9,9 +9,8 @@ const styles = StyleSheet.create({
   },
 
   reminderView: {
-    margin: 20,
-    width: Dimensions.get("window").width - 40,
-    height: Dimensions.get("window").height - 400,
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height * 0.575,
   },
 
   buttonContainer: {
@@ -41,7 +40,7 @@ const styles = StyleSheet.create({
     margin: 15,
     marginTop: 50,
     padding: 10,
-    width: 300,
+    width: Dimensions.get('screen').width * 2 / 3,
     borderRadius: 20,
     shadowOpacity: 1.0,
     shadowRadius: 2.5,
@@ -51,8 +50,8 @@ const styles = StyleSheet.create({
   modal: {
     flex: 1,
     alignItems: "center",
-    marginVertical: 100,
-    marginHorizontal: 25,
+    marginVertical: Dimensions.get('screen').height / 6,
+    marginHorizontal: Dimensions.get('screen').width / 18,
     padding: 25,
     backgroundColor: "white",
     borderRadius: 25,
@@ -69,11 +68,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     margin: 12.5,
     padding: 10,
-    width: 300,
-    height: 112.5,
+    width: Dimensions.get('screen').width * 0.75,
+    height: Dimensions.get('screen').height / 8,
     borderRadius: 10,
     shadowOpacity: 1.0,
-    shadowRadius: 1.5,
+    shadowRadius: 2,
     shadowOffset: { width: 0, height: 0 },
   },
 
